@@ -19,7 +19,7 @@ export function HomePage() {
   if (!profile) return <Welcome />;
   return (
     <div className="flex flex-col gap-5">
-      <section className="sticker p-4 md:p-6 flex items-center gap-4">
+      <section className="sticker p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
         <Bunny mood="happy" equipped={profile.equipped} className="w-28 md:w-36 anim-float shrink-0" />
         <div>
           <p className="font-display text-3xl md:text-4xl font-extrabold">Chào {profile.name}! 👋</p>
@@ -32,11 +32,11 @@ export function HomePage() {
             key={t.to}
             to={t.to}
             onClick={() => sfx.tap()}
-            className={`rounded-[2rem] border-4 border-white shadow-lg p-4 md:p-6 flex flex-col items-center text-center gap-1 transition-transform hover:scale-[1.02] active:scale-95 ${t.color}`}
+            className={`rounded-[2rem] border-4 border-white shadow-lg p-3 sm:p-4 md:p-6 flex flex-col items-center text-center gap-1 transition-transform hover:scale-[1.02] active:scale-95 ${t.color}`}
           >
-            <span className="text-5xl md:text-6xl">{t.emoji}</span>
-            <span className="font-display text-2xl md:text-3xl font-extrabold leading-tight">{t.title}</span>
-            <span className="text-base md:text-lg font-semibold opacity-90">{t.sub}</span>
+            <span className="text-4xl sm:text-5xl md:text-6xl">{t.emoji}</span>
+            <span className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold leading-tight">{t.title}</span>
+            <span className="text-sm sm:text-base md:text-lg font-semibold opacity-90">{t.sub}</span>
           </Link>
         ))}
       </div>

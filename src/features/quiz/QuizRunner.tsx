@@ -122,8 +122,8 @@ export function QuizRunner({ questions, mode, onFinish }: { questions: Question[
 
       <section className="sticker p-4 md:p-6 flex flex-col gap-4">
         <div className="flex items-start gap-3">
-          <Bunny mood={mood} equipped={profile?.equipped} className={`w-20 md:w-24 shrink-0 ${phase === 'correct' ? 'anim-hop' : ''}`} />
-          <p className="font-display text-2xl md:text-3xl font-bold leading-snug flex-1 pt-2">{q.prompt}</p>
+          <Bunny mood={mood} equipped={profile?.equipped} className={`w-14 sm:w-20 md:w-24 shrink-0 ${phase === 'correct' ? 'anim-hop' : ''}`} />
+          <p className="font-display text-xl sm:text-2xl md:text-3xl font-bold leading-snug flex-1 min-w-0 pt-2">{q.prompt}</p>
           <ReadAloudButton text={q.speak} className="shrink-0" />
         </div>
         {q.visual && (

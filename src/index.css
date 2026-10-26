@@ -54,6 +54,16 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Tô nền vùng tai thỏ / thanh trạng thái của điện thoại phía trên thanh tiêu đề */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 30;
+  background: var(--color-base-200);
+}
+
 h1,
 h2,
 h3,

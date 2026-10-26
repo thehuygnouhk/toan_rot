@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { ALL_SKILLS, SKILLS } from '../../engine/questions';
 import { accuracy, levelOf, type SkillLevel } from '../../engine/progress/mastery';
@@ -25,6 +26,7 @@ export function ProgressPage() {
   const byId = new Map(stats.map((s) => [s.skillId, s]));
   const stars = new Map(stations.map((s) => [s.stationId, s.bestStars]));
   const weak = ALL_SKILLS.filter((id) => levelOf(byId.get(id)) === 'can-on');
+  const [confirmReset, setConfirmReset] = useState(false);
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-4xl font-extrabold text-primary text-center">📊 Bảng tiến độ</h1>
@@ -83,15 +85,28 @@ export function ProgressPage() {
         <Link to="/xem-truoc" className="btn btn-secondary rounded-full">
           👀 Xem trước câu hỏi của từng dạng bài
         </Link>
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm"
-          onClick={() => {
-            if (window.confirm('Xoá toàn bộ tiến độ, cà rốt và tranh của bé trên máy này?')) void resetAll();
-          }}
-        >
-          Xoá dữ liệu và bắt đầu lại
-        </button>
+        {confirmReset ? (
+          <div className="flex flex-wrap items-center justify-center gap-2 rounded-2xl bg-secondary/40 p-3">
+            <span className="font-semibold">Xoá toàn bộ tiến độ, cà rốt và tranh của bé trên máy này?</span>
+            <button
+              type="button"
+              className="btn btn-sm btn-secondary"
+              onClick={() => {
+                void resetAll();
+                setConfirmReset(false);
+              }}
+            >
+              Xoá hẳn
+            </button>
+            <button type="button" className="btn btn-sm bg-base-100" onClick={() => setConfirmReset(false)}>
+              Thôi
+            </button>
+          </div>
+        ) : (
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => setConfirmReset(true)}>
+            Xoá dữ liệu và bắt đầu lại
+          </button>
+        )}
       </section>
     </div>
   );

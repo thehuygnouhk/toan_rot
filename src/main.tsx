@@ -13,9 +13,12 @@ import '@fontsource/nunito/latin-800.css';
 import '@fontsource/nunito/vietnamese-800.css';
 import './index.css';
 import App from './App';
+import { openDb } from './engine/progress/db';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+void openDb().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
+});

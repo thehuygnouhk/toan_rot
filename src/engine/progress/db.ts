@@ -1,4 +1,4 @@
-import Dexie, { type EntityTable } from 'dexie';
+import Dexie, { type DexieOptions, type EntityTable } from 'dexie';
 import type { SkillStat } from './mastery';
 
 export type Slot = 'dau' | 'mat' | 'co' | 'than' | 'tay';
@@ -34,8 +34,7 @@ export interface AnswerLog {
   at: number;
 }
 
-/** Toàn bộ dữ liệu lưu trên máy của bé (IndexedDB), không gửi đi đâu. */
-export const db = new Dexie('toan-rot') as Dexie & {
+type Db = Dexie & {
   profile: EntityTable<Profile, 'id'>;
   skills: EntityTable<SkillStat, 'skillId'>;
   stations: EntityTable<StationStat, 'stationId'>;
@@ -43,10 +42,31 @@ export const db = new Dexie('toan-rot') as Dexie & {
   answers: EntityTable<AnswerLog, 'id'>;
 };
 
-db.version(1).stores({
-  profile: 'id',
-  skills: 'skillId',
-  stations: 'stationId',
-  artworks: '++id, pictureId, completedAt',
-  answers: '++id, skillId, at',
-});
+function createDb(options?: DexieOptions): Db {
+  const d = new Dexie('toan-rot', options) as Db;
+  d.version(1).stores({
+    profile: 'id',
+    skills: 'skillId',
+    stations: 'stationId',
+    artworks: '++id, pictureId, completedAt',
+    answers: '++id, skillId, at',
+  });
+  return d;
+}
+
+/** Toàn bộ dữ liệu lưu trên máy của bé (IndexedDB), không gửi đi đâu. */
+export let db = createDb();
+
+/** false khi trình duyệt chặn lưu trữ (chế độ ẩn danh…): app vẫn chạy nhưng không nhớ tiến độ. */
+export let persistent = true;
+
+export async function openDb(): Promise<void> {
+  try {
+    await db.open();
+  } catch {
+    const fake = await import('fake-indexeddb');
+    db = createDb({ indexedDB: fake.indexedDB, IDBKeyRange: fake.IDBKeyRange });
+    persistent = false;
+    await db.open();
+  }
+}
