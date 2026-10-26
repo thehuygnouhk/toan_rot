@@ -4,6 +4,8 @@
 >
 > 👉 Hãy hỏi cô giáo hoặc xem bìa sách để biết cháu đang học bộ nào. Tài liệu này lấy **Kết nối tri thức** làm trục chính (bộ phổ biến nhất); tên bài có thể khác vài chữ so với sách in, nên đối chiếu khi cần.
 
+> 📍 **Cháu đang ở đâu (26/10/2026):** học bộ **Kết nối tri thức**, đã xong **Bài 22** (hết Chủ đề 3), sắp **thi giữa học kì 1** → phạm vi ôn: **Bài 1 – Bài 22** (Chủ đề 1, 2, 3). Tên Bài 14 – Bài 22 và mục "Ôn tập và kiểm tra giữa học kì 1" đã đối chiếu khớp với mục lục Toán 3 trên OLM mà gia đình chụp gửi.
+
 ---
 
 ## 1. Ba mạch kiến thức

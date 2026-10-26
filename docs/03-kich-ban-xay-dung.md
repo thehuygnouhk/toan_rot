@@ -6,6 +6,26 @@
 
 ---
 
+## ⚡ Lộ trình nhanh: ôn thi giữa học kì 1 (đã làm — 26/10/2026)
+
+Cháu học **Kết nối tri thức**, đã học xong **Bài 22** (hết Chủ đề 3) và sắp thi giữa kì 1. Vì vậy thứ tự thi công được đổi: làm ngay một bản chạy được để ôn **Bài 1–22**, rồi mới quay lại các giai đoạn bên dưới.
+
+**Đã có trong repo** (chạy bằng `npm install` rồi `npm run dev`):
+
+| Phần | Nội dung | Tương ứng giai đoạn |
+|---|---|---|
+| Khung web + giao diện dễ thương | Vite + React + TypeScript, Tailwind + daisyUI theme pastel, font Baloo 2 / Nunito, nút đọc to giọng Việt, âm thanh Web Audio, pháo giấy | GĐ1 |
+| Bộ sinh câu hỏi Bài 1–22 | 17 dạng bài (số đến 1 000, cộng trừ có nhớ ≤ 1 lượt, tìm thành phần, bảng nhân chia 2–9, một phần mấy, lời văn, trung điểm, hình tròn, góc vuông, hình phẳng, hình khối), hình minh hoạ SVG kiểu SGK, đáp án nhiễu theo lỗi sai thật, **83 test tự động** | GĐ2 (CD01–CD03) |
+| Ôn thi giữa kì | 8 trạm ôn theo bài + **đề thi thử 15 câu** (không gợi ý) + màn kết quả chỉ ra phần cần ôn | GĐ3 |
+| Tiến độ và thưởng | Lưu trên máy (IndexedDB), điểm thành thạo từng kỹ năng, gợi ý 3 bậc, cà rốt, sao, hỏi lại câu sai | GĐ3 |
+| Tủ đồ Thỏ Rốt | 15 món: nơ, vương miện, vòng hoa, kính, vòng ngọc trai, khăn, 4 váy, đũa phép, bóng bay, túi xách | GĐ4 (bản rút gọn) |
+| Xưởng Tô Màu | 3 tranh bí mật (bánh kem, váy công chúa, kem ốc quế) × 4 loại phép tính, tô tự do, bộ sưu tập | GĐ5 (chưa có vẽ tay) |
+| Trang bố mẹ | Bảng tiến độ theo chủ đề, "nên ôn thêm", trang **Xem trước câu hỏi** có đáp án | GĐ10 (một phần) |
+
+**Chưa làm** (theo đúng các giai đoạn bên dưới): mini-game Phaser (GĐ6), các chủ đề sau giữa kì (GĐ7–8, mở dần theo lớp), bản đồ 2.5D (GĐ9), vẽ tay tự do, chạy offline (PWA). Khi làm tiếp, chỉ cần **thêm bộ sinh câu hỏi cho chủ đề mới** vào `src/engine/questions/` và một trạm vào `src/features/onthi/stations.ts`.
+
+---
+
 # PHẦN 1 — KỊCH BẢN SẢN PHẨM
 
 ## 1.1. Ý tưởng trong một câu
@@ -364,5 +384,6 @@ Làm sau mốc MVP và sau mỗi 1–2 giai đoạn.
 
 ## Việc tiếp theo ngay
 
-1. Cho biết **cháu học bộ sách nào** và **đang học đến bài nào** — để chỉnh thứ tự mở khoá cho khớp.
-2. Bắt đầu **Giai đoạn 0 và 1**.
+1. ✅ Đã biết: cháu học **Kết nối tri thức**, xong **Bài 22**, sắp thi giữa kì 1 → đã làm bản ôn thi (mục ⚡ ở đầu tài liệu).
+2. Cho cháu chơi thử bản ôn thi theo **Phần 4**, ghi nhận xét vào `docs/nhat-ky-thu-nghiem.md`.
+3. Sau kì thi: làm **Giai đoạn 6** (mini-game Phaser) và bổ sung **Chủ đề 4 trở đi** đúng nhịp trên lớp.
