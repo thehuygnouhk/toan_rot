@@ -33,5 +33,12 @@ export function PhaserGame({ sceneKey, scene }: { sceneKey: string; scene: typeo
       game?.destroy(true);
     };
   }, [sceneKey, scene]);
-  return <div ref={ref} className="w-full aspect-video rounded-3xl overflow-hidden bg-linear-to-b from-info/40 to-base-200 touch-none select-none" />;
+  // Khung 16:9 vừa cả chiều rộng lẫn chiều cao màn hình (máy tính bảng xoay ngang, laptop thấp) để không phải cuộn khi chơi
+  return (
+    <div
+      ref={ref}
+      className="mx-auto aspect-video rounded-3xl overflow-hidden bg-linear-to-b from-info/40 to-base-200 touch-none select-none"
+      style={{ width: 'min(100%, calc((100dvh - 16rem) * 16 / 9))' }}
+    />
+  );
 }
