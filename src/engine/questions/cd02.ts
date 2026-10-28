@@ -55,6 +55,7 @@ export function timThanhPhanNhanChia(rng: Rng): Draft {
 }
 
 export function motPhanMayHinh(rng: Rng): Draft {
+  if (rng.chance(0.4)) return motPhanMayNhom(rng);
   const parts = rng.int(2, 9);
   const shape = parts <= 6 && rng.chance(0.5) ? 'circle' : 'bar';
   const near = [2, 3, 4, 5, 6, 7, 8, 9]
@@ -67,6 +68,23 @@ export function motPhanMayHinh(rng: Rng): Draft {
     options: [`1/${parts}`, ...near.slice(0, 3).map((n) => `1/${n}`)],
     hints: ['Đếm xem hình được chia thành mấy phần bằng nhau.', `Hình được chia thành ${parts} phần bằng nhau, tô màu 1 phần.`],
     solution: `Hình chia thành ${parts} phần bằng nhau, tô màu 1 phần: đã tô màu 1/${parts} hình.`,
+  };
+}
+
+/** Nhóm đồ vật xếp thành các hàng bằng nhau, một hàng được khoanh: đã khoanh một phần mấy? */
+function motPhanMayNhom(rng: Rng): Draft {
+  const n = rng.int(2, 6);
+  const k = rng.int(2, 5);
+  const [thing, , emoji, bare] = rng.pick(THINGS);
+  const options = [...new Set([n, k, n + 1, n - 1, n + 2].filter((x) => x >= 2 && x <= 9))].slice(0, 4).map((x) => `1/${x}`);
+  return {
+    prompt: `Đã khoanh vào một phần mấy số ${bare}?`,
+    visual: { kind: 'items', emoji, total: n * k, marked: k },
+    answer: `1/${n}`,
+    options,
+    distractors: k !== n ? [{ value: `1/${k}`, why: `Có ${k} ${thing} được khoanh, nhưng mình cần xem số ${bare} được chia thành mấy phần bằng nhau.` }] : [],
+    hints: ['Đếm xem số đồ vật được chia thành mấy hàng bằng nhau.', `Có ${n} hàng bằng nhau, đã khoanh 1 hàng.`],
+    solution: `Có ${n * k} ${thing} chia thành ${n} phần bằng nhau, mỗi phần ${k} ${thing}. Đã khoanh 1 phần, tức là 1/${n} số ${bare}.`,
   };
 }
 

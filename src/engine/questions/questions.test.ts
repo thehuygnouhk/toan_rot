@@ -161,7 +161,7 @@ describe('bảng nhân, bảng chia', () => {
   });
 
   it('toán có lời văn nhân, chia có cả nhân lẫn chia', () => {
-    const division = SEEDS.filter((seed) => /chia đều|xếp vào mỗi/.test(makeQuestion('loi-van-nhan-chia', seed).prompt)).length;
+    const division = SEEDS.filter((seed) => /chia đều|xếp vào mỗi|Hỏi cô đính được/.test(makeQuestion('loi-van-nhan-chia', seed).prompt)).length;
     expect(division / SEEDS.length).toBeGreaterThan(0.3);
     expect(division / SEEDS.length).toBeLessThan(0.7);
   });
@@ -188,11 +188,111 @@ describe('hình học', () => {
   });
 
   it('một phần mấy: hình có đúng số phần trong đáp án', () => {
+    const kinds = new Set<string>();
     for (const seed of SEEDS) {
       const q = makeQuestion('mot-phan-may-hinh', seed);
-      if (q.visual?.kind !== 'fraction') throw new Error('thiếu hình');
-      expect(q.answer).toBe(`1/${q.visual.parts}`);
+      kinds.add(q.visual?.kind ?? 'none');
+      if (q.visual?.kind === 'fraction') expect(q.answer).toBe(`1/${q.visual.parts}`);
+      else if (q.visual?.kind === 'items') {
+        expect(q.visual.total % q.visual.marked).toBe(0);
+        expect(q.answer).toBe(`1/${q.visual.total / q.visual.marked}`);
+      } else throw new Error('thiếu hình');
     }
+    expect(kinds).toEqual(new Set(['fraction', 'items']));
+  });
+
+  it('trung điểm trên tam giác lưới ô vuông: đáp án đúng là trung điểm, các điểm khác không phải', () => {
+    let seen = 0;
+    for (const seed of SEEDS) {
+      const q = makeQuestion('trung-diem', seed);
+      if (q.visual?.kind !== 'grid-figure') continue;
+      seen++;
+      const { vertices, marks } = q.visual;
+      const v = (l: string) => vertices.find((p) => p.label === l)!;
+      const isMid = (m: { x: number; y: number }, side: string) => {
+        const [p, r] = [v(side[0]), v(side[1])];
+        return m.x === (p.x + r.x) / 2 && m.y === (p.y + r.y) / 2;
+      };
+      const askSide = q.prompt.match(/^Trung điểm của cạnh (\w\w) là điểm nào\?$/)?.[1];
+      if (askSide) {
+        for (const m of marks) expect(isMid(m, askSide), `${q.prompt} ${m.label}`).toBe(m.label === q.answer);
+      } else {
+        const label = q.prompt.match(/^Điểm (\w) là trung điểm của cạnh nào\?$/)![1];
+        expect(isMid(marks.find((m) => m.label === label)!, q.answer)).toBe(true);
+      }
+    }
+    expect(seen).toBeGreaterThan(50);
+  });
+
+  it('hình tròn: bán kính là đoạn nối tâm với một điểm trên đường tròn', () => {
+    for (const seed of SEEDS) {
+      const q = makeQuestion('hinh-tron', seed);
+      if (q.visual?.kind !== 'circle' || !q.prompt.includes('bán kính')) continue;
+      const { center, segments } = q.visual;
+      const radius = segments.find((x) => x.type === 'radius');
+      const diameter = segments.find((x) => x.type === 'diameter')!;
+      expect(q.answer).toBe(radius ? radius.label : `${center}${diameter.from}`);
+    }
+  });
+});
+
+describe('câu hỏi có hình vẽ (Bài 16–22)', () => {
+  it('kiến bò qua các hình tròn, hình tròn trong hình chữ nhật: đáp án khớp hình', () => {
+    const kinds = new Set<string>();
+    for (const seed of SEEDS) {
+      const q = makeQuestion('hinh-tron-ung-dung', seed);
+      const ans = Number(q.answer);
+      if (q.visual?.kind === 'circle-chain') {
+        const { count, radius, route } = q.visual;
+        kinds.add(route);
+        expect(ans, q.prompt).toBe(radius * (route === 'full' ? 2 * count : 2 * (count - 1)));
+        expect(q.prompt).toContain(`${radius} cm`);
+      } else if (q.visual?.kind === 'circles-in-rect') {
+        const { count, given, value } = q.visual;
+        kinds.add(given);
+        if (given === 'length') {
+          const d = value / count;
+          expect(Number.isInteger(d / 2)).toBe(true);
+          expect(ans, q.prompt).toBe(q.prompt.includes('bán kính') ? d / 2 : d);
+        } else {
+          expect(ans, q.prompt).toBe(q.prompt.includes('chiều dài') ? 2 * value * count : 2 * value);
+        }
+      } else throw new Error('thiếu hình');
+    }
+    expect(kinds).toEqual(new Set(['full', 'centers', 'length', 'radius']));
+  });
+
+  it('đếm hình: đáp án đúng với từng hình ghép', () => {
+    const expected = { 'fan-2': 3, 'fan-3': 6, 'strips-2': 3, 'strips-3': 6, 'grid-2x2': 5, 'square-x': 8 };
+    for (const seed of SEEDS) {
+      const q = makeQuestion('dem-hinh', seed);
+      if (q.visual?.kind !== 'count-shapes') throw new Error('thiếu hình');
+      expect(Number(q.answer)).toBe(expected[q.visual.shape]);
+    }
+  });
+
+  it('ghép khối lập phương: tổng số khối, khối sơn 3 mặt, 2 mặt', () => {
+    const kinds = new Set<string>();
+    for (const seed of SEEDS) {
+      const q = makeQuestion('khoi-ghep', seed);
+      if (q.visual?.kind !== 'cube-stack') throw new Error('thiếu hình');
+      const { a, b, c } = q.visual;
+      const ans = Number(q.answer);
+      if (q.prompt.includes('3 mặt')) {
+        kinds.add('3');
+        expect(ans).toBe(8);
+      } else if (q.prompt.includes('2 mặt')) {
+        kinds.add('2');
+        expect(ans).toBe(4 * (a - 2) + 4 * (b - 2) + 4 * (c - 2));
+        expect(ans).toBeGreaterThan(0);
+      } else {
+        kinds.add('tong');
+        expect(ans).toBe(a * b * c);
+      }
+      const total = q.prompt.match(/^Ghép (\d+) khối/);
+      if (total) expect(Number(total[1])).toBe(a * b * c);
+    }
+    expect(kinds.size).toBe(3);
   });
 });
 

@@ -1,7 +1,7 @@
 import Dexie, { type DexieOptions, type EntityTable } from 'dexie';
 import type { SkillStat } from './mastery';
 
-export type Slot = 'dau' | 'mat' | 'co' | 'than' | 'tay';
+export type Slot = 'dau' | 'mat' | 'co' | 'than' | 'tay' | 'chan' | 'lung' | 'nen';
 
 export interface Profile {
   id: 'me';
@@ -10,6 +10,15 @@ export interface Profile {
   owned: string[];
   equipped: Partial<Record<Slot, string>>;
   createdAt: number;
+  /** Màu bé tự chọn cho từng món đồ (mã món → mã màu). */
+  colors?: Record<string, string>;
+  /** Nhiệm vụ hằng ngày đã nhận thưởng (chỉ giữ ngày gần nhất). */
+  quests?: { day: string; claimed: string[]; bonus: boolean };
+  /** Lần gần nhất bé thay đồ hoặc đổi màu đồ. */
+  dressedAt?: number;
+  /** Số buổi trình diễn trên Sàn diễn và lần gần nhất. */
+  shows?: number;
+  lastShowAt?: number;
 }
 
 export interface StationStat {

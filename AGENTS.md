@@ -19,7 +19,7 @@ Tài liệu gốc — đọc trước khi làm việc lớn:
 
 Vite + React + TypeScript · Tailwind CSS + daisyUI · Phaser 4 (mini-game) · SVG (tô màu, thay đồ) · perfect-freehand · canvas-confetti · Web Audio (`src/ui/sound.ts`; howler.js khi cần file âm thanh) · Dexie (IndexedDB) · ts-fsrs · Vitest + Playwright · vite-plugin-pwa · React Three Fiber (tuỳ chọn, chỉ cho phòng 3D).
 
-**Đã có** (26/10/2026): bản ôn thi giữa học kì 1 — bộ sinh câu hỏi CD01–CD03 (Bài 1–22), trạm ôn + đề thi thử, Xưởng Tô Màu, Tủ đồ Thỏ Rốt, bảng tiến độ. Bé học bộ **Kết nối tri thức**. Chủ đề mới chỉ mở khi bé đã học trên lớp.
+**Đã có** (28/10/2026): bản ôn thi giữa học kì 1 — bộ sinh câu hỏi CD01–CD03 (Bài 1–22, có câu hình vẽ như vở bài tập), trạm ôn + đề thi thử, Sàn diễn thời trang, nhiệm vụ hằng ngày + vườn hoa, Xưởng Tô Màu, Tủ đồ Thỏ Rốt (đổi màu, đồ đặc biệt mở khoá bằng thành tích), bảng tiến độ. Bé học bộ **Kết nối tri thức**. Chủ đề mới chỉ mở khi bé đã học trên lớp.
 
 Không thêm thư viện lớn khác khi chưa giải thích lý do cho người dùng.
 

@@ -26,7 +26,27 @@ export type Visual =
   /** Mặt đồng hồ kim: giờ 1–12, phút 0/15/30. */
   | { kind: 'clock'; hour: number; minute: number }
   /** Đường gấp khúc, mỗi đoạn ghi độ dài. */
-  | { kind: 'polyline'; lengths: number[]; unit: string };
+  | { kind: 'polyline'; lengths: number[]; unit: string }
+  /** Các hình tròn bằng nhau đặt sát nhau thành hàng; chú kiến bò theo đường xanh (từ A trên hình đầu qua các tâm tới B, hoặc chỉ nối các tâm). */
+  | { kind: 'circle-chain'; count: number; radius: number; route: 'full' | 'centers' }
+  /** Các hình tròn bằng nhau xếp vừa khít trong hình chữ nhật; ghi sẵn chiều dài hoặc bán kính. */
+  | { kind: 'circles-in-rect'; count: number; theme: 'cuc-ao' | 'banh-quy'; given: 'length' | 'radius'; value: number }
+  /** Hình vẽ trên lưới ô vuông: các đỉnh nối thành hình khép kín, các điểm được đánh dấu (toạ độ theo ô). */
+  | { kind: 'grid-figure'; width: number; height: number; vertices: GridPoint[]; marks: GridPoint[] }
+  /** Khối hộp chữ nhật ghép từ khối lập phương nhỏ: a khối theo chiều dài, b theo chiều sâu, c tầng. */
+  | { kind: 'cube-stack'; a: number; b: number; c: number }
+  /** Hình ghép để đếm số hình. */
+  | { kind: 'count-shapes'; shape: CountShape }
+  /** Nhóm đồ vật xếp thành hàng, hàng đầu (marked cái) được khoanh. */
+  | { kind: 'items'; emoji: string; total: number; marked: number };
+
+export interface GridPoint {
+  label: string;
+  x: number;
+  y: number;
+}
+
+export type CountShape = 'fan-2' | 'fan-3' | 'strips-2' | 'strips-3' | 'grid-2x2' | 'square-x';
 
 export interface Choice {
   value: string;
@@ -90,7 +110,10 @@ export type SkillId =
   | 'hinh-tron'
   | 'goc-vuong'
   | 'hinh-phang'
-  | 'khoi-hinh';
+  | 'khoi-hinh'
+  | 'hinh-tron-ung-dung'
+  | 'dem-hinh'
+  | 'khoi-ghep';
 
 export interface SkillInfo {
   id: SkillId;

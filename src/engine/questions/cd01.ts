@@ -1,6 +1,6 @@
 // Chủ đề 1 — Ôn tập và bổ sung (Bài 1–8): số đến 1 000, cộng trừ, tìm thành phần, bảng nhân chia 2–5.
 import type { Rng } from '../rng';
-import { CONTAINERS, NAMES, THINGS, fmt } from './format';
+import { CONTAINERS, FASHION, NAMES, THINGS, fmt } from './format';
 import { readNumber } from './readNumber';
 import type { Draft } from './types';
 
@@ -302,6 +302,23 @@ export function multiplicationFact(rng: Rng, tables: number[]): Draft {
     { value: String(a + b), why: 'Đây là phép nhân, không phải phép cộng.' },
   ];
   const kind = rng.int(0, 2);
+  if (kind === 1 && rng.chance(0.4)) {
+    const [thing, unit, emoji, garment] = rng.pick(FASHION);
+    const bb = Math.max(2, b);
+    return {
+      prompt: `Tiệm may đính ${a} ${thing} lên mỗi ${garment}. Hỏi ${bb} ${garment} như thế cần tất cả bao nhiêu ${thing}?`,
+      answer: a * bb,
+      unit,
+      input: 'number',
+      distractors: [
+        { value: String(a + bb), why: `Có ${bb} ${garment}, mỗi ${garment} ${a} ${thing} — mình dùng phép nhân nhé!` },
+        { value: String(a * (bb + 1)), why: `Đếm lại số ${garment} nhé.` },
+      ],
+      hints: [`Có ${bb} ${garment}, mỗi ${garment} ${a} ${thing}: lấy ${a} × ${bb}.`],
+      hintVisual: { kind: 'groups', emoji, groups: bb, perGroup: a },
+      solution: `${a} × ${bb} = ${a * bb} (${unit}).`,
+    };
+  }
   if (kind === 1) {
     const [thing, unit, emoji] = rng.pick(THINGS);
     const box = rng.pick(CONTAINERS);
@@ -353,6 +370,26 @@ export function divisionFact(rng: Rng, tables: number[]): Draft {
   const q = rng.int(1, 10);
   const n = d * q;
   const kind = rng.int(0, 2);
+  if (kind > 0 && q >= 2 && rng.chance(0.4)) {
+    const [thing, unit, emoji, garment] = rng.pick(FASHION);
+    const evenShare = kind === 1;
+    return {
+      prompt: evenShare
+        ? `Cô thợ may có ${n} ${thing}, đính chia đều lên ${d} ${garment}. Hỏi mỗi ${garment} được đính mấy ${thing}?`
+        : `Cô thợ may có ${n} ${thing}. Mỗi ${garment} cần đính ${d} ${thing}. Hỏi cô đính được mấy ${garment}?`,
+      answer: q,
+      unit: evenShare ? unit : 'chiếc',
+      input: 'number',
+      distractors: [
+        { value: String(n - d), why: 'Chia ra các phần bằng nhau thì dùng phép chia, không dùng phép trừ.' },
+        { value: String(n + d), why: 'Chia ra thì số phải nhỏ đi chứ.' },
+        { value: String(q + 1), why: 'Kiểm tra lại bằng phép nhân nhé.' },
+      ],
+      hints: [`Lấy ${n} : ${d}.`, `Nhớ bảng chia ${d}: ${d} × mấy = ${n}?`],
+      hintVisual: { kind: 'groups', emoji, groups: evenShare ? d : q, perGroup: evenShare ? q : d },
+      solution: `${n} : ${d} = ${q} (${evenShare ? unit : 'chiếc'}).`,
+    };
+  }
   if (kind > 0 && q >= 2) {
     const [thing, unit, emoji] = rng.pick(THINGS);
     const box = rng.pick(CONTAINERS);

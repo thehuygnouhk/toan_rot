@@ -47,3 +47,11 @@ export const THINGS = [
 ] as const;
 
 export const CONTAINERS = ['hộp', 'túi', 'lọ', 'khay', 'đĩa'] as const;
+
+/** Đề kiểu tiệm may: [vật đính lên đồ, đơn vị, emoji, món đồ]. Món đồ đếm bằng "chiếc". */
+export const FASHION = [
+  ['chiếc cúc áo', 'chiếc', '🔘', 'chiếc áo'],
+  ['chiếc nơ', 'chiếc', '🎀', 'chiếc váy'],
+  ['viên đá lấp lánh', 'viên', '💎', 'chiếc túi xách'],
+  ['bông hoa vải', 'bông', '🌸', 'chiếc mũ'],
+] as const;

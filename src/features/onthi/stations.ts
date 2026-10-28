@@ -22,7 +22,16 @@ export const STATIONS: Station[] = [
   { id: 'mot-phan-may', title: 'Một phần mấy', emoji: '🍪', lessons: 'Bài 14', skills: ['mot-phan-may-hinh', 'mot-phan-may-so'], count: 8, mode: 'practice' },
   { id: 'loi-van', title: 'Toán có lời văn', emoji: '📖', lessons: 'Bài 2–15', skills: ['loi-van-cong-tru', 'loi-van-nhan-chia', 'mot-phan-may-so'], count: 8, mode: 'practice' },
   { id: 'trung-diem-tron-goc', title: 'Trung điểm, hình tròn, góc vuông', emoji: '📐', lessons: 'Bài 16–18', skills: ['trung-diem', 'hinh-tron', 'goc-vuong'], count: 8, mode: 'practice' },
-  { id: 'hinh-phang-khoi', title: 'Hình phẳng và hình khối', emoji: '🎁', lessons: 'Bài 19–21', skills: ['hinh-phang', 'khoi-hinh', 'goc-vuong'], count: 8, mode: 'practice' },
+  { id: 'hinh-phang-khoi', title: 'Hình phẳng và hình khối', emoji: '🎁', lessons: 'Bài 19–21', skills: ['hinh-phang', 'khoi-hinh', 'goc-vuong', 'dem-hinh'], count: 8, mode: 'practice' },
+  {
+    id: 'thu-thach-hinh-ve',
+    title: 'Thử thách hình vẽ',
+    emoji: '🧩',
+    lessons: 'Bài 16–22',
+    skills: ['hinh-tron-ung-dung', 'khoi-ghep', 'dem-hinh', 'trung-diem'],
+    count: 8,
+    mode: 'practice',
+  },
   {
     id: 'de-thi-thu',
     title: 'Đề thi thử giữa kì 1',
@@ -31,6 +40,7 @@ export const STATIONS: Station[] = [
     skills: [
       'so-den-1000', 'so-sanh-1000', 'cong-tru-1000', 'loi-van-cong-tru', 'tim-thanh-phan-cong-tru', 'bang-nhan-2-5', 'bang-chia-2-5', 'xem-dong-ho', 'do-luong',
       'bang-nhan-6-9', 'bang-chia-6-9', 'tim-thanh-phan-nhan-chia', 'mot-phan-may-hinh', 'mot-phan-may-so', 'loi-van-nhan-chia', 'trung-diem', 'hinh-tron', 'goc-vuong', 'hinh-phang', 'khoi-hinh',
+      'hinh-tron-ung-dung', 'dem-hinh', 'khoi-ghep',
     ],
     count: 15,
     mode: 'exam',
