@@ -1,7 +1,9 @@
+import { fmt } from '../engine/questions/format';
 import { speak, useHasVietnameseVoice } from './speech';
 
-/** Hiện "1/3" thành phân số xếp chồng; giá trị khác hiện nguyên văn. */
+/** Hiện "1/3" thành phân số xếp chồng, "1000" thành "1 000"; giá trị khác hiện nguyên văn. */
 export function AnswerText({ value }: { value: string }) {
+  if (/^\d{4,}$/.test(value)) return <>{fmt(Number(value))}</>;
   const m = value.match(/^(\d+)\/(\d+)$/);
   if (!m) return <>{value}</>;
   return (

@@ -135,13 +135,26 @@ export function soDen1000(rng: Rng): Draft {
 export function soSanh1000(rng: Rng): Draft {
   if (rng.chance(0.6)) {
     const a = rng.int(100, 999);
-    const style = rng.int(0, 2);
-    let b = a;
-    if (style === 0) {
-      const da = digits(a);
-      b = da[2] * 100 + da[0] * 10 + da[1];
-    } else if (style === 1) b = a + rng.pick([-10, -1, 1, 10, 100, -100]);
-    if (b < 100 || b > 999) b = a;
+    const [u, t, h] = digits(a);
+    // Hai vế bằng nhau chỉ thỉnh thoảng thôi, để bé phải so sánh thật
+    const style = rng.int(0, 7);
+    if (style === 6) {
+      // Viết số thành tổng các trăm, chục, đơn vị (Bài 1)
+      const parts = [h * 100, t * 10, u].filter((x) => x > 0);
+      const b = rng.pick([a, h * 100 + u * 10 + t, a <= 989 ? a + 10 : a - 10, a >= 101 ? a - 1 : a + 1]);
+      const sign = a > b ? '>' : a < b ? '<' : '=';
+      return {
+        prompt: `Chọn dấu thích hợp: ${parts.map(fmt).join(' + ')} ⬜ ${fmt(b)}`,
+        speak: `So sánh ${parts.join(' cộng ')} với ${b}. Chọn dấu thích hợp.`,
+        answer: sign,
+        options: ['>', '<', '='],
+        hints: ['Tính tổng ở vế trái trước.', `${parts.map(fmt).join(' + ')} = ${fmt(a)}.`],
+        solution: `${parts.map(fmt).join(' + ')} = ${fmt(a)}, mà ${fmt(a)} ${sign} ${fmt(b)}.`,
+      };
+    }
+    let b = style <= 2 ? h * 100 + u * 10 + t : style <= 5 ? a + rng.pick([-10, -1, 1, 10, 100, -100]) : a;
+    if (b === a && style !== 7) b = a <= 989 ? a + 10 : a - 10;
+    if (b < 100 || b > 999) b = 2 * a - b;
     const sign = a > b ? '>' : a < b ? '<' : '=';
     return {
       prompt: `Chọn dấu thích hợp: ${fmt(a)} ⬜ ${fmt(b)}`,
@@ -167,48 +180,76 @@ export function soSanh1000(rng: Rng): Draft {
   };
 }
 
-export function congTru1000(rng: Rng): Draft {
-  const add = rng.chance(0.5);
-  const story = rng.chance(0.3);
-  const [a, b] = add ? pickAddition(rng) : pickSubtraction(rng);
+/** Đáp án nhiễu cho a ± b: quên nhớ / lấy số lớn trừ số bé, lệch 1 chục, làm nhầm phép tính. */
+function addSubDistractors(a: number, b: number, add: boolean, wrongOp = add ? 'Đây là phép cộng mà.' : 'Đây là phép trừ mà.') {
   const ans = add ? a + b : a - b;
-  const distractors = add
+  return add
     ? [
         { value: String(addNoCarry(a, b)), why: 'Con quên nhớ 1 sang hàng bên trái rồi.' },
         { value: String(ans + 10), why: 'Nhớ thừa 1 chục rồi.' },
-        { value: String(a - b), why: 'Đây là phép cộng mà.' },
+        { value: String(a - b), why: wrongOp },
       ]
     : [
         { value: String(subBigMinusSmall(a, b)), why: 'Không lấy số bé trừ số lớn ngược lại được — phải mượn 1 ở hàng bên trái.' },
         { value: String(ans - 10), why: 'Trừ thừa 1 chục rồi.' },
-        { value: String(a + b), why: 'Đây là phép trừ mà.' },
+        { value: String(a + b), why: wrongOp },
       ];
-  const hints = [
-    'Đặt tính thẳng hàng: đơn vị thẳng đơn vị, chục thẳng chục, trăm thẳng trăm.',
-    add ? 'Cộng từ phải sang trái. Hàng nào được 10 trở lên thì viết chữ số hàng đơn vị và nhớ 1 sang hàng bên trái.' : 'Trừ từ phải sang trái. Hàng nào không trừ được thì mượn 1 ở hàng bên trái (và nhớ trả lại).',
-  ];
-  if (story) {
-    const [thing, unit] = rng.pick(THINGS);
-    const name = rng.pick(NAMES);
-    return {
-      prompt: add
-        ? `Tiệm của ${name} có ${fmt(a)} ${thing}, nhập thêm ${fmt(b)} ${thing}. Tiệm có tất cả bao nhiêu ${thing}?`
-        : `Tiệm của ${name} có ${fmt(a)} ${thing}, đã bán ${fmt(b)} ${thing}. Tiệm còn lại bao nhiêu ${thing}?`,
-      answer: ans,
-      unit,
-      input: 'number',
-      distractors,
-      hints: [add ? '"Tất cả" thì làm phép cộng.' : '"Còn lại" thì làm phép trừ.', ...hints],
-      solution: `${fmt(a)} ${add ? '+' : '−'} ${fmt(b)} = ${fmt(ans)} (${unit}).`,
-    };
-  }
+}
+
+const columnHints = (add: boolean) => [
+  'Đặt tính thẳng hàng: đơn vị thẳng đơn vị, chục thẳng chục, trăm thẳng trăm.',
+  add ? 'Cộng từ phải sang trái. Hàng nào được 10 trở lên thì viết chữ số hàng đơn vị và nhớ 1 sang hàng bên trái.' : 'Trừ từ phải sang trái. Hàng nào không trừ được thì mượn 1 ở hàng bên trái (và nhớ trả lại).',
+];
+
+export function congTru1000(rng: Rng): Draft {
+  if (rng.chance(0.3)) return loiVanCongTru(rng);
+  const add = rng.chance(0.5);
+  const [a, b] = add ? pickAddition(rng) : pickSubtraction(rng);
+  const ans = add ? a + b : a - b;
   return {
     prompt: `Tính: ${fmt(a)} ${add ? '+' : '−'} ${fmt(b)} = ?`,
     answer: ans,
     input: rng.chance(0.5) ? 'number' : 'choice',
-    distractors,
-    hints,
+    distractors: addSubDistractors(a, b, add),
+    hints: columnHints(add),
     solution: `${fmt(a)} ${add ? '+' : '−'} ${fmt(b)} = ${fmt(ans)}.`,
+  };
+}
+
+/** Toán có lời văn cộng, trừ trong 1 000: thêm, còn lại, nhiều hơn, ít hơn (Bài 2). */
+export function loiVanCongTru(rng: Rng): Draft {
+  const kind = rng.pick(['them', 'con-lai', 'nhieu-hon', 'it-hon'] as const);
+  const add = kind === 'them' || kind === 'nhieu-hon';
+  const [a, b] = add ? pickAddition(rng) : pickSubtraction(rng);
+  const ans = add ? a + b : a - b;
+  const [thing, unit] = rng.pick(THINGS);
+  const [name, other] = rng.shuffle(NAMES);
+  const story = {
+    them: {
+      prompt: `Tiệm của ${name} có ${fmt(a)} ${thing}, nhập thêm ${fmt(b)} ${thing}. Tiệm có tất cả bao nhiêu ${thing}?`,
+      clue: '"Tất cả" thì làm phép cộng.',
+    },
+    'con-lai': {
+      prompt: `Tiệm của ${name} có ${fmt(a)} ${thing}, đã bán ${fmt(b)} ${thing}. Tiệm còn lại bao nhiêu ${thing}?`,
+      clue: '"Còn lại" thì làm phép trừ.',
+    },
+    'nhieu-hon': {
+      prompt: `Tiệm của ${name} có ${fmt(a)} ${thing}. Tiệm của ${other} có nhiều hơn tiệm của ${name} ${fmt(b)} ${thing}. Hỏi tiệm của ${other} có bao nhiêu ${thing}?`,
+      clue: `Tiệm của ${other} có NHIỀU HƠN, nên lấy ${fmt(a)} cộng ${fmt(b)}.`,
+    },
+    'it-hon': {
+      prompt: `Tiệm của ${name} có ${fmt(a)} ${thing}. Tiệm của ${other} có ít hơn tiệm của ${name} ${fmt(b)} ${thing}. Hỏi tiệm của ${other} có bao nhiêu ${thing}?`,
+      clue: `Tiệm của ${other} có ÍT HƠN, nên lấy ${fmt(a)} trừ ${fmt(b)}.`,
+    },
+  }[kind];
+  return {
+    prompt: story.prompt,
+    answer: ans,
+    unit,
+    input: 'number',
+    distractors: addSubDistractors(a, b, add, story.clue),
+    hints: [story.clue, ...columnHints(add)],
+    solution: `${fmt(a)} ${add ? '+' : '−'} ${fmt(b)} = ${fmt(ans)} (${unit}).`,
   };
 }
 
@@ -345,5 +386,181 @@ export function divisionFact(rng: Rng, tables: number[]): Draft {
     hints: [`Nhớ bảng nhân ${d}: ${d} × mấy = ${n}?`],
     hintVisual: { kind: 'groups', emoji: '🍬', groups: q, perGroup: d },
     solution: `Vì ${d} × ${q} = ${n} nên ${n} : ${d} = ${q}.`,
+  };
+}
+
+/** Đọc giờ như SGK: "8 giờ", "8 giờ 15 phút". */
+export const readTime = (h: number, m: number) => (m === 0 ? `${h} giờ` : `${h} giờ ${m} phút`);
+
+/** Xem đồng hồ khi kim phút chỉ số 12, 3, 6 và đổi giờ buổi chiều (Bài 7, ôn lại lớp 2). */
+export function xemDongHo(rng: Rng): Draft {
+  if (rng.chance(0.7)) {
+    const hour = rng.int(1, 12);
+    const minute = rng.pick([0, 15, 30]);
+    const answer = readTime(hour, minute);
+    const next = (hour % 12) + 1;
+    const prev = ((hour + 10) % 12) + 1;
+    const candidates = [
+      // Nhầm kim ngắn với kim dài
+      readTime(minute === 0 ? 12 : minute / 5, (hour % 12) * 5),
+      // Kim giờ đã quá nửa thì đọc sang số sau; kim phút chỉ số 3 đọc thành 3 phút
+      minute === 30 ? readTime(next, 30) : minute === 15 ? readTime(hour, 3) : readTime(hour, 12),
+      readTime(hour, { 0: 30, 15: 30, 30: 15 }[minute]!),
+      readTime(prev, minute),
+      readTime(next, minute),
+    ];
+    const wrong = [...new Set(candidates)].filter((c) => c !== answer).slice(0, 3);
+    return {
+      prompt: 'Đồng hồ chỉ mấy giờ?',
+      visual: { kind: 'clock', hour, minute },
+      answer,
+      options: [answer, ...wrong],
+      hints: [
+        'Kim ngắn chỉ giờ, kim dài chỉ phút.',
+        'Kim dài chỉ số 12 là đúng giờ, chỉ số 3 là 15 phút, chỉ số 6 là 30 phút.',
+        'Kim ngắn nằm giữa hai số thì đọc số mà kim vừa đi qua.',
+      ],
+      solution: `Kim ngắn chỉ ${minute === 0 ? 'số' : 'quá số'} ${hour}, kim dài chỉ số ${minute === 0 ? 12 : minute / 5}: ${answer}.`,
+    };
+  }
+  // Buổi chiều: 1 giờ chiều là 13 giờ … 6 giờ chiều là 18 giờ
+  const h = rng.int(1, 6);
+  if (rng.chance(0.5)) {
+    const minute = rng.pick([0, 0, 15, 30]);
+    const answer = readTime(h + 12, minute);
+    return {
+      prompt: `${readTime(h, minute)} chiều còn gọi là mấy giờ?`,
+      answer,
+      options: [answer, readTime(h + 10, minute), readTime(h + 11, minute), readTime(h + 13, minute)],
+      hints: ['Giờ buổi chiều: lấy số giờ cộng thêm 12.', `${h} + 12 = ${h + 12}.`],
+      solution: `${h} giờ chiều là ${h + 12} giờ, nên ${readTime(h, minute)} chiều còn gọi là ${answer}.`,
+    };
+  }
+  const answer = `${h} giờ chiều`;
+  return {
+    prompt: `${h + 12} giờ là mấy giờ chiều?`,
+    answer,
+    options: [answer, `${h + 2} giờ chiều`, `${h + 1} giờ chiều`, `${h === 1 ? 4 : h - 1} giờ chiều`],
+    hints: ['Lấy số giờ trừ đi 12.', `${h + 12} − 12 = ${h}.`],
+    solution: `${h + 12} − 12 = ${h}, nên ${h + 12} giờ là ${h} giờ chiều.`,
+  };
+}
+
+/** Đơn vị lớn, đơn vị nhỏ, 1 đơn vị lớn bằng bao nhiêu đơn vị nhỏ. */
+const UNIT_FACTS = [
+  ['dm', 'cm', 10],
+  ['m', 'dm', 10],
+  ['m', 'cm', 100],
+  ['km', 'm', 1000],
+] as const;
+
+/** Số đo có hai chữ số cho bài cộng/trừ có đơn vị: có nhớ không quá một lượt, kết quả dưới 100. */
+function pickSmallPair(rng: Rng, add: boolean): [number, number] {
+  for (;;) {
+    const a = rng.int(add ? 5 : 15, add ? 70 : 95);
+    const b = rng.int(add ? 3 : 4, add ? 99 - a : a - 3);
+    if (b > 0 && (add ? a + b < 100 && carriesAdd(a, b) <= 1 : borrowsSub(a, b) <= 1)) return [a, b];
+  }
+}
+
+/** Ôn tập đo lường (Bài 7): đổi cm, dm, m, km; cộng trừ với kg, lít; độ dài đường gấp khúc. */
+export function doLuong(rng: Rng): Draft {
+  const kind = rng.int(0, 3);
+  if (kind === 0) {
+    const [big, small, times] = rng.pick(UNIT_FACTS);
+    const k = times === 1000 ? 1 : rng.pick([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    const answer = k * times;
+    const otherTimes = times === 100 ? 10 : 100;
+    return {
+      prompt: `Số thích hợp: ${k} ${big} = ? ${small}`,
+      answer,
+      unit: small,
+      input: rng.chance(0.5) ? 'number' : 'choice',
+      distractors: [
+        { value: String(k * otherTimes), why: `Nhớ lại: 1 ${big} = ${fmt(times)} ${small}.` },
+        { value: String(k), why: `Đổi sang đơn vị bé hơn (${small}) thì số phải lớn hơn.` },
+        { value: String(times === 1000 ? 10 : answer + times), why: `Nhớ lại: 1 ${big} = ${fmt(times)} ${small}.` },
+      ],
+      hints: [`1 ${big} = ${fmt(times)} ${small}.`, ...(k > 1 ? [`Đếm thêm ${fmt(times)} cho đủ ${k} lần.`] : [])],
+      solution: `1 ${big} = ${fmt(times)} ${small}, nên ${k} ${big} = ${fmt(answer)} ${small}.`,
+    };
+  }
+  if (kind === 3) return duongGapKhuc(rng);
+  const add = rng.chance(0.5);
+  const [a, b] = pickSmallPair(rng, add);
+  const name = rng.pick(NAMES);
+  const ans = add ? a + b : a - b;
+  const story =
+    kind === 1
+      ? add
+        ? {
+            prompt: `Tiệm bánh của ${name} mua một bao bột mì nặng ${a} kg và một bao đường nặng ${b} kg. Hỏi cả hai bao nặng bao nhiêu ki-lô-gam?`,
+            unit: 'kg',
+            clue: '"Cả hai bao" thì làm phép cộng.',
+          }
+        : {
+            prompt: `Bao bột mì nặng ${a} kg, bao đường nặng ${b} kg. Hỏi bao bột mì nặng hơn bao đường bao nhiêu ki-lô-gam?`,
+            unit: 'kg',
+            clue: '"Nặng hơn bao nhiêu" thì lấy số lớn trừ số bé.',
+          }
+      : add
+        ? {
+            prompt: `Để làm tiệc sinh nhật, ${name} pha ${a} l nước chanh và ${b} l nước cam. Hỏi ${name} pha tất cả bao nhiêu lít nước?`,
+            unit: 'l',
+            clue: '"Tất cả" thì làm phép cộng.',
+          }
+        : {
+            prompt: `Thùng có ${a} l nước ép dâu. Các bạn đã uống ${b} l. Hỏi thùng còn lại bao nhiêu lít nước ép dâu?`,
+            unit: 'l',
+            clue: '"Còn lại" thì làm phép trừ.',
+          };
+  return {
+    prompt: story.prompt,
+    answer: ans,
+    unit: story.unit,
+    input: 'number',
+    distractors: addSubDistractors(a, b, add, story.clue),
+    hints: [story.clue, add ? `Lấy ${a} + ${b}.` : `Lấy ${a} − ${b}.`],
+    solution: `${a} ${add ? '+' : '−'} ${b} = ${ans} (${story.unit}).`,
+  };
+}
+
+/** Độ dài đường gấp khúc = tổng độ dài các đoạn; các đoạn bằng nhau thì dùng phép nhân. */
+function duongGapKhuc(rng: Rng): Draft {
+  if (rng.chance(0.4)) {
+    const n = rng.int(3, 5);
+    const len = rng.int(2, 9);
+    return {
+      prompt: `Đường gấp khúc dưới đây gồm ${n} đoạn thẳng, mỗi đoạn dài ${len} cm. Tính độ dài đường gấp khúc.`,
+      visual: { kind: 'polyline', lengths: Array(n).fill(len), unit: 'cm' },
+      answer: n * len,
+      unit: 'cm',
+      input: 'number',
+      distractors: [
+        { value: String(n + len), why: `Có ${n} đoạn bằng nhau, mỗi đoạn ${len} cm — mình dùng phép nhân nhé!` },
+        { value: String(len * (n - 1)), why: 'Đếm lại số đoạn thẳng nhé.' },
+        { value: String(len * (n + 1)), why: 'Đếm số đoạn thẳng, không đếm số điểm.' },
+      ],
+      hints: ['Độ dài đường gấp khúc bằng tổng độ dài các đoạn thẳng.', `Có ${n} đoạn, mỗi đoạn ${len} cm: lấy ${len} × ${n}.`],
+      solution: `${len} × ${n} = ${n * len} (cm).`,
+    };
+  }
+  let lengths: number[];
+  do lengths = [rng.int(5, 40), rng.int(5, 40), rng.int(5, 40)];
+  while (lengths[0] + lengths[1] + lengths[2] > 99);
+  const sum = lengths[0] + lengths[1] + lengths[2];
+  return {
+    prompt: 'Tính độ dài đường gấp khúc ABCD.',
+    visual: { kind: 'polyline', lengths, unit: 'cm' },
+    answer: sum,
+    unit: 'cm',
+    input: 'number',
+    distractors: [
+      { value: String(lengths[0] + lengths[1]), why: 'Con quên cộng đoạn CD rồi.' },
+      { value: String(lengths[1] + lengths[2]), why: 'Con quên cộng đoạn AB rồi.' },
+      { value: String(sum + 10), why: 'Cộng lại cẩn thận từng hàng nhé.' },
+    ],
+    hints: ['Độ dài đường gấp khúc bằng tổng độ dài các đoạn thẳng AB, BC, CD.', `Lấy ${lengths.join(' + ')}.`],
+    solution: `${lengths.join(' + ')} = ${sum} (cm).`,
   };
 }

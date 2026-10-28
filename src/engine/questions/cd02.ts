@@ -1,6 +1,6 @@
 // Chủ đề 2 — Bảng nhân, bảng chia (Bài 9–15): bảng 6–9, tìm thành phần, một phần mấy.
 import type { Rng } from '../rng';
-import { CONTAINERS, NAMES, THINGS } from './format';
+import { NAMES, THINGS } from './format';
 import { divisionFact, multiplicationFact } from './cd01';
 import type { Draft } from './types';
 
@@ -92,26 +92,11 @@ export function motPhanMaySo(rng: Rng): Draft {
   };
 }
 
-/** Toán có lời văn trộn nhân và chia trong bảng 2–9. */
+/** Toán có lời văn trộn đều nhân và chia trong bảng 2–9 (chỉ lấy dạng có lời văn). */
 export function loiVanNhanChia(rng: Rng): Draft {
-  if (rng.chance(0.5)) {
-    const d = multiplicationFact(rng, TABLES_2_9);
-    if (d.unit) return d;
-  } else {
-    const d = divisionFact(rng, TABLES_2_9);
+  const make = rng.chance(0.5) ? multiplicationFact : divisionFact;
+  for (;;) {
+    const d = make(rng, TABLES_2_9);
     if (d.unit) return d;
   }
-  const [thing, unit] = rng.pick(THINGS);
-  const box = rng.pick(CONTAINERS);
-  const a = rng.pick(TABLES_2_9);
-  const b = rng.int(2, 9);
-  return {
-    prompt: `Mỗi ${box} có ${a} ${thing}. Hỏi ${b} ${box} có bao nhiêu ${thing}?`,
-    answer: a * b,
-    unit,
-    input: 'number',
-    distractors: [{ value: String(a + b), why: 'Có các nhóm bằng nhau thì dùng phép nhân.' }],
-    hints: [`Lấy ${a} × ${b}.`],
-    solution: `${a} × ${b} = ${a * b} (${unit}).`,
-  };
 }

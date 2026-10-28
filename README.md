@@ -2,7 +2,7 @@
 
 Trang web giúp bé gái lớp 3 **thích học Toán** qua tô màu, thời trang và nhân vật dễ thương — bám sát chương trình Toán lớp 3 sách mới (GDPT 2018, bộ Kết nối tri thức).
 
-> **Bản hiện tại: ôn thi giữa học kì 1 (Bài 1 – Bài 22).** 8 trạm ôn + đề thi thử, Xưởng Tô Màu, Tủ đồ Thỏ Rốt, bảng tiến độ cho bố mẹ. Xem mục ⚡ trong [docs/03-kich-ban-xay-dung.md](docs/03-kich-ban-xay-dung.md).
+> **Bản hiện tại: ôn thi giữa học kì 1 (Bài 1 – Bài 22).** 9 trạm ôn (có trạm Đồng hồ và đo lường của Bài 7) + đề thi thử, Xưởng Tô Màu, Tủ đồ Thỏ Rốt, bảng tiến độ cho bố mẹ. Xem mục ⚡ trong [docs/03-kich-ban-xay-dung.md](docs/03-kich-ban-xay-dung.md).
 
 ## Chạy trên máy
 
@@ -15,7 +15,7 @@ npm run dev        # mở http://localhost:5173
 
 | Lệnh | Làm gì |
 |---|---|
-| `npm test` | Chạy 83 test: câu hỏi đúng phạm vi, đáp án đúng, lưu tiến độ… |
+| `npm test` | Chạy hơn 100 test: câu hỏi đúng phạm vi, đáp án đúng, lưu tiến độ… |
 | `npm run lint` / `npm run typecheck` | Kiểm tra code |
 | `npm run build` | Tạo bản web tĩnh trong `dist/` (mở được ở bất kỳ đâu) |
 

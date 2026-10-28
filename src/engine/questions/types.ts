@@ -22,7 +22,11 @@ export type Visual =
   /** Một hình phẳng. */
   | { kind: 'polygon'; shape: 'triangle' | 'right-triangle' | 'quadrilateral' | 'rectangle' | 'square' }
   /** Một hình khối. */
-  | { kind: 'solid'; solid: 'cube' | 'box' };
+  | { kind: 'solid'; solid: 'cube' | 'box' }
+  /** Mặt đồng hồ kim: giờ 1–12, phút 0/15/30. */
+  | { kind: 'clock'; hour: number; minute: number }
+  /** Đường gấp khúc, mỗi đoạn ghi độ dài. */
+  | { kind: 'polyline'; lengths: number[]; unit: string };
 
 export interface Choice {
   value: string;
@@ -70,9 +74,12 @@ export type SkillId =
   | 'so-den-1000'
   | 'so-sanh-1000'
   | 'cong-tru-1000'
+  | 'loi-van-cong-tru'
   | 'tim-thanh-phan-cong-tru'
   | 'bang-nhan-2-5'
   | 'bang-chia-2-5'
+  | 'xem-dong-ho'
+  | 'do-luong'
   | 'bang-nhan-6-9'
   | 'bang-chia-6-9'
   | 'tim-thanh-phan-nhan-chia'

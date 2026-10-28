@@ -1,5 +1,5 @@
 import { createRng, type Rng } from '../rng';
-import { congTru1000, divisionFact, multiplicationFact, soDen1000, soSanh1000, timThanhPhanCongTru } from './cd01';
+import { congTru1000, divisionFact, doLuong, loiVanCongTru, multiplicationFact, soDen1000, soSanh1000, timThanhPhanCongTru, xemDongHo } from './cd01';
 import { loiVanNhanChia, motPhanMayHinh, motPhanMaySo, timThanhPhanNhanChia } from './cd02';
 import { gocVuong, hinhPhang, hinhTron, khoiHinh, trungDiem } from './cd03';
 import { toSpeech } from './format';
@@ -11,9 +11,12 @@ export const SKILLS: Record<SkillId, SkillInfo> = {
   'so-den-1000': { id: 'so-den-1000', topicId: 'CD01', name: 'Đọc, viết số đến 1 000', lessons: 'Bài 1', generate: soDen1000 },
   'so-sanh-1000': { id: 'so-sanh-1000', topicId: 'CD01', name: 'So sánh số đến 1 000', lessons: 'Bài 1', generate: soSanh1000 },
   'cong-tru-1000': { id: 'cong-tru-1000', topicId: 'CD01', name: 'Cộng, trừ trong phạm vi 1 000', lessons: 'Bài 2', generate: congTru1000 },
+  'loi-van-cong-tru': { id: 'loi-van-cong-tru', topicId: 'CD01', name: 'Toán có lời văn cộng, trừ', lessons: 'Bài 2', generate: loiVanCongTru },
   'tim-thanh-phan-cong-tru': { id: 'tim-thanh-phan-cong-tru', topicId: 'CD01', name: 'Tìm thành phần phép cộng, trừ', lessons: 'Bài 3', generate: timThanhPhanCongTru },
   'bang-nhan-2-5': { id: 'bang-nhan-2-5', topicId: 'CD01', name: 'Bảng nhân 2, 3, 4, 5', lessons: 'Bài 4–6', generate: (r) => multiplicationFact(r, [2, 3, 4, 5]) },
   'bang-chia-2-5': { id: 'bang-chia-2-5', topicId: 'CD01', name: 'Bảng chia 2, 3, 4, 5', lessons: 'Bài 4–6', generate: (r) => divisionFact(r, [2, 3, 4, 5]) },
+  'xem-dong-ho': { id: 'xem-dong-ho', topicId: 'CD01', name: 'Xem đồng hồ, giờ buổi chiều', lessons: 'Bài 7', generate: xemDongHo },
+  'do-luong': { id: 'do-luong', topicId: 'CD01', name: 'Đo độ dài, ki-lô-gam, lít', lessons: 'Bài 7', generate: doLuong },
   'bang-nhan-6-9': { id: 'bang-nhan-6-9', topicId: 'CD02', name: 'Bảng nhân 6, 7, 8, 9', lessons: 'Bài 9–12', generate: (r) => multiplicationFact(r, [6, 7, 8, 9]) },
   'bang-chia-6-9': { id: 'bang-chia-6-9', topicId: 'CD02', name: 'Bảng chia 6, 7, 8, 9', lessons: 'Bài 9–12', generate: (r) => divisionFact(r, [6, 7, 8, 9]) },
   'tim-thanh-phan-nhan-chia': { id: 'tim-thanh-phan-nhan-chia', topicId: 'CD02', name: 'Tìm thành phần phép nhân, chia', lessons: 'Bài 13', generate: timThanhPhanNhanChia },
@@ -24,7 +27,7 @@ export const SKILLS: Record<SkillId, SkillInfo> = {
   'hinh-tron': { id: 'hinh-tron', topicId: 'CD03', name: 'Hình tròn: tâm, bán kính, đường kính', lessons: 'Bài 17', generate: hinhTron },
   'goc-vuong': { id: 'goc-vuong', topicId: 'CD03', name: 'Góc vuông, góc không vuông', lessons: 'Bài 18', generate: gocVuong },
   'hinh-phang': { id: 'hinh-phang', topicId: 'CD03', name: 'Tam giác, tứ giác, HCN, hình vuông', lessons: 'Bài 19', generate: hinhPhang },
-  'khoi-hinh': { id: 'khoi-hinh', topicId: 'CD03', name: 'Khối lập phương, khối hộp chữ nhật', lessons: 'Bài 21', generate: khoiHinh },
+  'khoi-hinh': { id: 'khoi-hinh', topicId: 'CD03', name: 'Khối lập phương, hộp chữ nhật, trụ, cầu', lessons: 'Bài 7, 21', generate: khoiHinh },
 };
 
 export const ALL_SKILLS = Object.keys(SKILLS) as SkillId[];
