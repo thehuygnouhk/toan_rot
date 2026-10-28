@@ -1,7 +1,7 @@
 import type { Rng } from '../rng';
 
 /** Mã chủ đề theo SGK Kết nối tri thức (xem docs/01-chuong-trinh-toan-3.md). */
-export type TopicId = 'CD01' | 'CD02' | 'CD03';
+export type TopicId = 'CD01' | 'CD02' | 'CD03' | 'CD04';
 
 /** Hình minh hoạ đi kèm đề bài, được vẽ bằng SVG trong features/quiz/VisualView. */
 export type Visual =
@@ -113,7 +113,8 @@ export type SkillId =
   | 'khoi-hinh'
   | 'hinh-tron-ung-dung'
   | 'dem-hinh'
-  | 'khoi-ghep';
+  | 'khoi-ghep'
+  | 'chia-2-chu-so';
 
 export interface SkillInfo {
   id: SkillId;

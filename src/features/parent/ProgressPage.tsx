@@ -17,6 +17,7 @@ const TOPICS = [
   { id: 'CD01', name: 'Chủ đề 1. Ôn tập và bổ sung' },
   { id: 'CD02', name: 'Chủ đề 2. Bảng nhân, bảng chia' },
   { id: 'CD03', name: 'Chủ đề 3. Làm quen với hình phẳng, hình khối' },
+  { id: 'CD04', name: 'Chủ đề 4. Phép nhân, phép chia trong phạm vi 100 (học thêm)' },
 ] as const;
 
 /** Trang cho bố mẹ: kỹ năng nào đã vững, kỹ năng nào cần ôn trước kì thi. */

@@ -46,7 +46,7 @@ export function Layout({ children }: { children: ReactNode }) {
           ⚠️ Trình duyệt đang chặn lưu dữ liệu nên tiến độ sẽ mất khi đóng trang. Hãy mở trang ở cửa sổ thường (không ẩn danh).
         </p>
       )}
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-4">{children}</main>
+      <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-4 overflow-x-clip">{children}</main>
     </div>
   );
 }

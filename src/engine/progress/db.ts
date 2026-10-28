@@ -19,6 +19,9 @@ export interface Profile {
   /** Số buổi trình diễn trên Sàn diễn và lần gần nhất. */
   shows?: number;
   lastShowAt?: number;
+  /** Sao cao nhất và số lần chơi từng mini-game; lần chơi gần nhất. */
+  games?: Record<string, { best: number; plays: number }>;
+  lastGameAt?: number;
 }
 
 export interface StationStat {

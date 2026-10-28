@@ -2,7 +2,7 @@
 
 Trang web giúp bé gái lớp 3 **thích học Toán** qua tô màu, thời trang và nhân vật dễ thương — bám sát chương trình Toán lớp 3 sách mới (GDPT 2018, bộ Kết nối tri thức).
 
-> **Bản hiện tại: ôn thi giữa học kì 1 (Bài 1 – Bài 22).** 10 trạm ôn (có Đồng hồ và đo lường của Bài 7, Thử thách hình vẽ như vở bài tập) + đề thi thử, Sàn diễn thời trang, nhiệm vụ hằng ngày và vườn hoa chăm học, Xưởng Tô Màu, Tủ đồ Thỏ Rốt (đổi màu, đồ đặc biệt), bảng tiến độ cho bố mẹ. Xem mục ⚡ trong [docs/03-kich-ban-xay-dung.md](docs/03-kich-ban-xay-dung.md).
+> **Bản hiện tại: ôn thi giữa học kì 1 (Bài 1 – Bài 22).** 10 trạm ôn (có Đồng hồ và đo lường của Bài 7, Thử thách hình vẽ như vở bài tập) + đề thi thử + trạm học thêm **chia số có hai chữ số (Bài 25–26)**, 6 trò chơi (làm từng bước: **chia từng bước**, **bảng vẽ hình học**, tiệm bánh; phản xạ: hứng kẹo, bắn bóng bay, lật thẻ), Sàn diễn thời trang, nhiệm vụ hằng ngày và vườn hoa chăm học, Xưởng Tô Màu, Tủ đồ Thỏ Rốt (đổi màu, đồ đặc biệt), bảng tiến độ cho bố mẹ. Xem mục ⚡ trong [docs/03-kich-ban-xay-dung.md](docs/03-kich-ban-xay-dung.md).
 
 ## Chạy trên máy
 
@@ -15,7 +15,7 @@ npm run dev        # mở http://localhost:5173
 
 | Lệnh | Làm gì |
 |---|---|
-| `npm test` | Chạy hơn 120 test: câu hỏi đúng phạm vi, đáp án khớp hình vẽ, lưu tiến độ, nhiệm vụ… |
+| `npm test` | Chạy gần 150 test: câu hỏi đúng phạm vi, đáp án khớp hình vẽ, lưu tiến độ, nhiệm vụ… |
 | `npm run lint` / `npm run typecheck` | Kiểm tra code |
 | `npm run build` | Tạo bản web tĩnh trong `dist/` (mở được ở bất kỳ đâu) |
 
@@ -33,6 +33,8 @@ src/features/quiz/      màn làm bài dùng chung, hình minh hoạ SVG
 src/features/coloring/  Xưởng Tô Màu (tranh SVG theo vùng)
 src/features/wardrobe/  Tủ đồ Thỏ Rốt (đồ, màu, đồ đặc biệt)
 src/features/fashion/   Sàn diễn thời trang
+src/features/minigames/ khu trò chơi: chọn trò, chấm điểm, thưởng; Chia từng bước, Bảng vẽ hình học (React/SVG)
+src/games/              mini-game Phaser 4 (hứng kẹo, bóng bay, lật thẻ, tiệm bánh)
 src/features/parent/    bảng tiến độ, xem trước câu hỏi
 src/ui/                 Thỏ Rốt, nút, âm thanh, đọc to, pháo giấy
 ```

@@ -8,10 +8,10 @@ import { sfx } from '../../ui/sound';
 import { speak } from '../../ui/speech';
 
 const TILES = [
+  { to: '/tro-choi', emoji: '🎮', title: 'Trò chơi', sub: 'Hứng kẹo, bóng bay, lật thẻ…', color: 'bg-success text-success-content' },
   { to: '/san-dien', emoji: '✨', title: 'Sàn diễn thời trang', sub: 'Giải toán để trình diễn', color: 'bg-secondary text-secondary-content' },
   { to: '/tu-do', emoji: '👗', title: 'Tủ đồ Thỏ Rốt', sub: 'Mua váy, đổi màu, nhận quà', color: 'bg-accent text-accent-content' },
   { to: '/to-mau', emoji: '🎨', title: 'Xưởng Tô Màu', sub: 'Giải toán để tô tranh', color: 'bg-info text-info-content' },
-  { to: '/tien-do', emoji: '📊', title: 'Bảng tiến độ', sub: 'Dành cho bố mẹ', color: 'bg-success text-success-content' },
 ];
 
 export function HomePage() {
@@ -73,6 +73,10 @@ export function HomePage() {
           </Link>
         ))}
       </div>
+
+      <Link to="/tien-do" className="btn btn-lg rounded-full self-center bg-base-100 border-2 border-base-300">
+        📊 Bảng tiến độ (dành cho bố mẹ)
+      </Link>
     </div>
   );
 }

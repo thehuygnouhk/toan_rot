@@ -20,11 +20,13 @@ Cháu học **Kết nối tri thức**, đã học xong **Bài 22** (hết Chủ
 | Tiến độ và thưởng | Lưu trên máy (IndexedDB), điểm thành thạo từng kỹ năng, gợi ý 3 bậc, cà rốt, sao, hỏi lại câu sai | GĐ3 |
 | Tủ đồ Thỏ Rốt | 28 món trong 8 ngăn (trên đầu, kính, cổ, váy áo, giày, cầm tay, sau lưng, phông nền); **bé tự đổi màu** đồ; 5 **đồ đặc biệt** chỉ mở khoá bằng thành tích (3 sao ở 3 trạm, 3 sao đề thi thử, trình diễn, tô 3 tranh, học 3 ngày) | GĐ4 (bản rút gọn) |
 | Sàn diễn thời trang | 8 câu trộn (ưu tiên dạng bé còn yếu); mỗi câu xong Thỏ Rốt bước một bước trên sàn, đúng ngay lần đầu được đèn flash 📸; cuối buổi có poster "Người mẫu nhí" | GĐ4 (sàn diễn) |
+| Mini-game Phaser 4 | 4 trò: **Hứng kẹo**, **Bắn bóng bay** (5 chủ đề: bảng nhân 2–5, 6–9, bảng chia, tìm số chưa biết, cộng trừ nhẩm tròn chục), **Lật thẻ ghép đôi** (phép nhân, phép chia, đồng hồ ↔ giờ), **Tiệm bánh chia đều** (kéo bánh vào hộp). Phaser chỉ hiển thị; đề từ `src/engine/questions/games.ts`, chấm điểm và thưởng ở React. Không thua cuộc, có tạm dừng; Phaser tải riêng khi vào chơi | GĐ6 (4 trò đầu) |
+| Trò làm từng bước | **Chia từng bước** (Bài 26): đặt tính dọc như SGK, bé điền từng bước chia – nhân – trừ – hạ; 3 bài đầu Thỏ Rốt hỏi từng phép tính, 2 bài sau chỉ nhắc tên bước; có dư ở lượt đầu và chia có dư. **Bảng vẽ hình học** (Bài 7, 16–20): chạm mắt lưới để vẽ hình chữ nhật, hình vuông theo số đo, góc vuông, trung điểm, đường gấp khúc đủ độ dài, bán kính, đường kính; chấm tự động, nhắc đúng lỗi, sai 2 lần hiện nét đứt gợi ý. Làm bằng React/SVG vì cần bố cục chữ số và toạ độ chính xác | GĐ6 + học thêm CD04 |
 | Nhiệm vụ hằng ngày, vườn hoa | 3 nhiệm vụ mỗi ngày (làm bài, hoàn thành trạm, sáng tạo) × 🥕 5, xong cả 3 mở hộp quà; mỗi ngày học nở một bông hoa, nghỉ không làm héo vườn | GĐ3 (vòng lặp thưởng) |
 | Xưởng Tô Màu | 3 tranh bí mật (bánh kem, váy công chúa, kem ốc quế) × 4 loại phép tính, tô tự do, bộ sưu tập | GĐ5 (chưa có vẽ tay) |
 | Trang bố mẹ | Bảng tiến độ theo chủ đề, "nên ôn thêm", trang **Xem trước câu hỏi** có đáp án | GĐ10 (một phần) |
 
-**Chưa làm** (theo đúng các giai đoạn bên dưới): mini-game Phaser (GĐ6), các chủ đề sau giữa kì (GĐ7–8, mở dần theo lớp), bản đồ 2.5D (GĐ9), vẽ tay tự do, chạy offline (PWA). Khi làm tiếp, chỉ cần **thêm bộ sinh câu hỏi cho chủ đề mới** vào `src/engine/questions/` và một trạm vào `src/features/onthi/stations.ts`.
+**Chưa làm** (theo đúng các giai đoạn bên dưới): các mini-game còn lại của GĐ6 (thỏ nhảy tia số, cân đĩa, túi mù… — chờ các chủ đề tương ứng), các chủ đề sau giữa kì (GĐ7–8, mở dần theo lớp), bản đồ 2.5D (GĐ9), vẽ tay tự do, chạy offline (PWA). Khi làm tiếp, chỉ cần **thêm bộ sinh câu hỏi cho chủ đề mới** vào `src/engine/questions/` và một trạm vào `src/features/onthi/stations.ts`.
 
 ---
 
