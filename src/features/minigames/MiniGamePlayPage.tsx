@@ -21,25 +21,19 @@ import { LatTheScene } from '../../games/lat-the/LatTheScene';
 import { PhaserGame } from '../../games/PhaserGame';
 import { EV } from '../../games/protocol';
 import { TiemBanhScene } from '../../games/tiem-banh/TiemBanhScene';
-import { ReadAloudButton, Stars } from '../../ui/bits';
-import { Bunny } from '../../ui/Bunny';
+import { ReadAloudButton } from '../../ui/bits';
 import { celebrate, praise, praiseAfterTry } from '../../ui/celebrate';
 import { sfx } from '../../ui/sound';
 import { stopSpeaking } from '../../ui/speech';
-import { BAKERY_ROUNDS, GAME_BONUS, GAME_BY_ID, MEMORY_PAIRS, QUICK_COUNT, type GameId, type GameInfo } from './catalog';
+import { GameSummary, type Summary } from './GameSummary';
+import { BAKERY_ROUNDS, GAME_BONUS, GAME_BY_ID, MEMORY_PAIRS, QUICK_COUNT, type GameId, type GameInfo, type PhaserGameId } from './catalog';
 
-const SCENES: Record<GameId, { key: string; scene: typeof Phaser.Scene }> = {
+const SCENES: Record<PhaserGameId, { key: string; scene: typeof Phaser.Scene }> = {
   'hung-keo': { key: HungKeoScene.KEY, scene: HungKeoScene },
   'bong-bay': { key: BongBayScene.KEY, scene: BongBayScene },
   'lat-the': { key: LatTheScene.KEY, scene: LatTheScene },
   'tiem-banh': { key: TiemBanhScene.KEY, scene: TiemBanhScene },
 };
-
-interface Summary {
-  stars: number;
-  carrots: number;
-  line: string;
-}
 
 /** Trang chơi một mini-game (tải riêng cùng Phaser khi bé vào). */
 export default function MiniGamePlayPage() {
@@ -218,7 +212,7 @@ function GameSession({ game, topic, onAgain }: { game: GameInfo; topic: string; 
     EventBus.emit(EV.pause, next);
   }
 
-  const { key, scene } = SCENES[game.id];
+  const { key, scene } = SCENES[game.id as PhaserGameId];
   const unit = game.topics === 'memory' ? 'Cặp' : game.topics === 'quick' ? 'Câu' : 'Lượt';
   return (
     <div className="flex flex-col gap-3">
@@ -250,27 +244,7 @@ function GameSession({ game, topic, onAgain }: { game: GameInfo; topic: string; 
       </div>
       {game.id === 'hung-keo' && !summary && <p className="text-center font-semibold opacity-80">👆 Kéo hoặc chạm để di chuyển giỏ của Thỏ Rốt.</p>}
       {game.id === 'tiem-banh' && !summary && <p className="text-center font-semibold opacity-80">👆 Kéo từng chiếc bánh vào hộp, xong thì bấm “Xong ✓”.</p>}
-      {summary && (
-        <section className="sticker p-5 flex flex-col items-center gap-3 text-center anim-pop">
-          <Bunny mood="cheer" className="w-24" />
-          <h2 className="text-3xl font-extrabold text-primary">Chơi xong rồi!</h2>
-          <Stars count={summary.stars} size="text-5xl" />
-          <p className="text-xl font-bold">
-            {summary.line} · 🥕 +{summary.carrots}
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <button type="button" className="btn btn-primary btn-lg rounded-full" onClick={onAgain}>
-              🔁 Chơi lại
-            </button>
-            <Link to="/tro-choi" className="btn btn-secondary btn-lg rounded-full">
-              🎮 Trò khác
-            </Link>
-            <Link to="/" className="btn btn-lg rounded-full bg-base-100">
-              🏠 Về nhà
-            </Link>
-          </div>
-        </section>
-      )}
+      {summary && <GameSummary summary={summary} onAgain={onAgain} />}
     </div>
   );
 }

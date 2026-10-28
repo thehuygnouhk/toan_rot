@@ -46,6 +46,8 @@ export const STATIONS: Station[] = [
     mode: 'exam',
     weights: { 'cong-tru-1000': 2, 'bang-nhan-6-9': 2, 'bang-chia-6-9': 2, 'loi-van-nhan-chia': 2 },
   },
+  // Học thêm ngoài phạm vi giữa kì (gia đình yêu cầu): bé đã học nhưng còn yếu. Không đưa vào đề thi thử.
+  { id: 'chia-hai-chu-so', title: 'Chia số có hai chữ số (học thêm)', emoji: '➗', lessons: 'Bài 25–26', skills: ['chia-2-chu-so'], count: 6, mode: 'practice' },
 ];
 
 export const STATION_BY_ID = new Map(STATIONS.map((s) => [s.id, s]));

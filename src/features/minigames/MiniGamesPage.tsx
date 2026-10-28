@@ -15,11 +15,23 @@ export function MiniGamesPage() {
         <h1 className="text-4xl font-extrabold text-primary">🎮 Trò chơi</h1>
         <p className="text-lg font-semibold opacity-80">Chơi mà học: mỗi lượt vài phút, chơi xong được cà rốt!</p>
       </div>
-      <div className="grid lg:grid-cols-2 gap-4">
-        {GAMES.map((g) => (
-          <GameCard key={g.id} game={g} best={profile?.games?.[g.id]?.best ?? 0} />
-        ))}
-      </div>
+      {(
+        [
+          ['tung-buoc', '🧠 Làm từng bước', 'Suy nghĩ từng bước như khi làm bài trên lớp'],
+          ['phan-xa', '⚡ Phản xạ nhanh', 'Ôn bảng nhân, bảng chia cho thật nhanh'],
+        ] as const
+      ).map(([group, title, sub]) => (
+        <section key={group} className="flex flex-col gap-3">
+          <h2 className="font-display text-2xl font-extrabold">
+            {title} <span className="text-base font-semibold opacity-70">· {sub}</span>
+          </h2>
+          <div className="grid lg:grid-cols-2 gap-4">
+            {GAMES.filter((g) => g.group === group).map((g) => (
+              <GameCard key={g.id} game={g} best={profile?.games?.[g.id]?.best ?? 0} />
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }

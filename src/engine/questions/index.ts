@@ -1,6 +1,7 @@
 import { createRng, type Rng } from '../rng';
 import { congTru1000, divisionFact, doLuong, loiVanCongTru, multiplicationFact, soDen1000, soSanh1000, timThanhPhanCongTru, xemDongHo } from './cd01';
 import { loiVanNhanChia, motPhanMayHinh, motPhanMaySo, timThanhPhanNhanChia } from './cd02';
+import { chiaHaiChuSo } from './cd04';
 import { demHinh, gocVuong, hinhPhang, hinhTron, hinhTronUngDung, khoiGhep, khoiHinh, trungDiem } from './cd03';
 import { toSpeech } from './format';
 import type { Choice, Draft, Question, SkillId, SkillInfo } from './types';
@@ -31,6 +32,7 @@ export const SKILLS: Record<SkillId, SkillInfo> = {
   'dem-hinh': { id: 'dem-hinh', topicId: 'CD03', name: 'Đếm hình', lessons: 'Bài 19, 22', generate: demHinh },
   'khoi-hinh': { id: 'khoi-hinh', topicId: 'CD03', name: 'Khối lập phương, hộp chữ nhật, trụ, cầu', lessons: 'Bài 7, 21', generate: khoiHinh },
   'khoi-ghep': { id: 'khoi-ghep', topicId: 'CD03', name: 'Ghép khối lập phương nhỏ, sơn mặt', lessons: 'Bài 21', generate: khoiGhep },
+  'chia-2-chu-so': { id: 'chia-2-chu-so', topicId: 'CD04', name: 'Chia số có hai chữ số cho số có một chữ số', lessons: 'Bài 25–26', generate: chiaHaiChuSo },
 };
 
 export const ALL_SKILLS = Object.keys(SKILLS) as SkillId[];
