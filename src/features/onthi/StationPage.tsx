@@ -72,7 +72,7 @@ function StationView({ stationId }: { stationId: string }) {
 
   return (
     <div className="sticker p-6 flex flex-col items-center gap-4 text-center max-w-xl mx-auto anim-pop">
-      <Bunny mood="happy" equipped={profile?.equipped} className="w-36 anim-float" />
+      <Bunny mood="happy" equipped={profile?.equipped} colors={profile?.colors} className="w-36 anim-float" />
       <p className="text-lg font-bold opacity-70">
         {station.lessons} · {station.count} câu
       </p>

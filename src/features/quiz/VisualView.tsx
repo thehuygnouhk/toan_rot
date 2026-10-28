@@ -1,4 +1,6 @@
+import type { ReactNode } from 'react';
 import type { Visual } from '../../engine/questions';
+import type { CountShape, GridPoint } from '../../engine/questions/types';
 
 const INK = '#4a3b5c';
 const PINK = '#ff7eb6';
@@ -25,6 +27,18 @@ export function VisualView({ visual }: { visual: Visual }) {
       return <Clock {...visual} />;
     case 'polyline':
       return <Polyline {...visual} />;
+    case 'circle-chain':
+      return <CircleChain {...visual} />;
+    case 'circles-in-rect':
+      return <CirclesInRect {...visual} />;
+    case 'grid-figure':
+      return <GridFigure {...visual} />;
+    case 'cube-stack':
+      return <CubeStack {...visual} />;
+    case 'count-shapes':
+      return <CountShapes shape={visual.shape} />;
+    case 'items':
+      return <Items {...visual} />;
   }
 }
 
@@ -107,7 +121,7 @@ function CircleParts({ center, segments }: { center: string; segments: { label: 
   const c = 130;
   const r = 90;
   // Góc đặt các điểm cố định để hình dễ nhìn
-  const angles: Record<'radius' | 'diameter' | 'chord', number[]> = { radius: [-50], diameter: [200, 20], chord: [100, 160] };
+  const angles: Record<'radius' | 'diameter' | 'chord', number[]> = { radius: [-50], diameter: [200, 20], chord: [-115, 125] };
   const pos = new Map<string, [number, number, number]>();
   pos.set(center, [c, c, -90]);
   for (const s of segments) {
@@ -297,5 +311,269 @@ function Polyline({ lengths, unit }: { lengths: number[]; unit: string }) {
         );
       })}
     </svg>
+  );
+}
+
+const GREEN = '#22a06b';
+
+/** Nhãn chữ có nền trắng mờ để đọc rõ khi nằm trên hình. */
+function Tag({ x, y, children, color = INK }: { x: number; y: number; children: string; color?: string }) {
+  const w = children.length * 10 + 10;
+  return (
+    <g>
+      <rect x={x - w / 2} y={y - 15} width={w} height={22} rx={8} fill="#fff" opacity={0.9} />
+      <text x={x} y={y + 2} textAnchor="middle" fontSize={18} fontWeight={800} fill={color} fontFamily="Nunito">
+        {children}
+      </text>
+    </g>
+  );
+}
+
+const FLOWER_COLORS = ['#7fd6c2', '#ffad5a', '#ff7eb6', '#b388ff'];
+
+/** Các hình tròn có bông hoa bên trong đặt sát nhau; đường xanh là đường chú kiến bò. */
+function CircleChain({ count, radius, route }: { count: number; radius: number; route: 'full' | 'centers' }) {
+  const R = 50;
+  const y = 110;
+  const cx = (i: number) => 60 + i * 2 * R;
+  const centers = ['M', 'N', 'P', 'Q'];
+  const path = [
+    ...(route === 'full' ? [[cx(0), y - R]] : []),
+    ...Array.from({ length: count }, (_, i) => [cx(i), y]),
+    ...(route === 'full' ? [[cx(count - 1), y - R]] : []),
+  ];
+  return (
+    <svg viewBox={`0 0 ${count * 2 * R + 20} 190`} className="w-full mx-auto" style={{ maxWidth: count * 140 }}>
+      {Array.from({ length: count }, (_, i) => (
+        <g key={i}>
+          <circle cx={cx(i)} cy={y} r={R} fill="#fff" stroke={INK} strokeWidth={3} />
+          {Array.from({ length: 8 }, (_, k) => (
+            <ellipse key={k} cx={cx(i)} cy={y - 24} rx={9} ry={18} fill={FLOWER_COLORS[i % 4]} opacity={0.75} transform={`rotate(${k * 45} ${cx(i)} ${y})`} />
+          ))}
+          <circle cx={cx(i)} cy={y} r={11} fill="#ffe08a" />
+        </g>
+      ))}
+      {route === 'centers' && <line x1={cx(0)} y1={y} x2={cx(0)} y2={y - R} stroke={INK} strokeWidth={2.5} strokeDasharray="5 4" />}
+      <polyline points={path.map((p) => p.join(',')).join(' ')} fill="none" stroke={GREEN} strokeWidth={5} strokeLinejoin="round" strokeLinecap="round" />
+      {path.map(([x, py], i) => (
+        <circle key={i} cx={x} cy={py} r={5} fill="#e5484d" />
+      ))}
+      <Tag x={cx(0) - 30} y={y - R / 2 + 4}>{`${radius} cm`}</Tag>
+      {route === 'full' && (
+        <>
+          <text x={cx(0)} y={y - R - 10} textAnchor="middle" fontSize={20} fontWeight={800} fill={INK} fontFamily="Nunito">A</text>
+          <text x={cx(count - 1)} y={y - R - 10} textAnchor="middle" fontSize={20} fontWeight={800} fill={INK} fontFamily="Nunito">B</text>
+        </>
+      )}
+      {Array.from({ length: count }, (_, i) => (
+        <Tag key={i} x={cx(i)} y={y + 30}>{centers[i]}</Tag>
+      ))}
+      <text x={route === 'full' ? cx(0) + 4 : cx(0) + 14} y={route === 'full' ? y - R - 22 : y - 12} fontSize={26}>
+        🐜
+      </text>
+    </svg>
+  );
+}
+
+/** Hình tròn bằng nhau xếp vừa khít trong hình chữ nhật: cúc áo trên miếng vải hoặc bánh quy trong hộp. */
+function CirclesInRect({ count, theme, given, value }: { count: number; theme: 'cuc-ao' | 'banh-quy'; given: 'length' | 'radius'; value: number }) {
+  const D = 80;
+  const x0 = 20;
+  const y0 = 46;
+  const W = count * D;
+  const button = theme === 'cuc-ao';
+  return (
+    <svg viewBox={`0 0 ${W + 40} ${D + 66}`} className="w-full mx-auto" style={{ maxWidth: count * 120 + 60 }}>
+      <rect x={x0} y={y0} width={W} height={D} rx={6} fill={button ? '#ffd6e7' : '#f3d29b'} stroke={button ? INK : '#9a6b3c'} strokeWidth={3} />
+      {button && <rect x={x0 + 5} y={y0 + 5} width={W - 10} height={D - 10} rx={4} fill="none" stroke="#f0569a" strokeWidth={2} strokeDasharray="6 5" />}
+      {Array.from({ length: count }, (_, i) => {
+        const cx = x0 + D / 2 + i * D;
+        const cy = y0 + D / 2;
+        return (
+          <g key={i}>
+            <circle cx={cx} cy={cy} r={D / 2} fill={button ? '#cdb4ff' : '#e0a458'} stroke={INK} strokeWidth={2.5} />
+            {button
+              ? [
+                  [-9, -9],
+                  [9, -9],
+                  [-9, 9],
+                  [9, 9],
+                ].map(([dx, dy]) => <circle key={`${dx}${dy}`} cx={cx + dx} cy={cy + dy} r={5} fill="#fff" stroke={INK} strokeWidth={1.5} />)
+              : [
+                  [-14, -10],
+                  [12, -16],
+                  [-4, 6],
+                  [16, 10],
+                  [-18, 16],
+                ].map(([dx, dy]) => <circle key={`${dx}${dy}`} cx={cx + dx} cy={cy + dy} r={4} fill="#6b3d1f" />)}
+          </g>
+        );
+      })}
+      {given === 'length' ? (
+        <g>
+          <g stroke={INK} strokeWidth={2}>
+            <line x1={x0} y1={22} x2={x0 + W} y2={22} />
+            <line x1={x0} y1={14} x2={x0} y2={30} />
+            <line x1={x0 + W} y1={14} x2={x0 + W} y2={30} />
+          </g>
+          <Tag x={x0 + W / 2} y={22}>{`${value} cm`}</Tag>
+        </g>
+      ) : (
+        <g>
+          <line x1={x0 + D / 2} y1={y0 + D / 2} x2={x0 + D} y2={y0 + D / 2} stroke={INK} strokeWidth={3} />
+          <circle cx={x0 + D / 2} cy={y0 + D / 2} r={4} fill={INK} />
+          <Tag x={x0 + D * 0.75} y={y0 + D / 2 - 14}>{`${value} cm`}</Tag>
+        </g>
+      )}
+    </svg>
+  );
+}
+
+/** Hình trên lưới ô vuông (như vở bài tập): đỉnh nối thành hình khép kín, các điểm đánh dấu trên cạnh. */
+function GridFigure({ width, height, vertices, marks }: { width: number; height: number; vertices: GridPoint[]; marks: GridPoint[] }) {
+  const s = 40;
+  const pad = 30;
+  const X = (x: number) => pad + x * s;
+  const Y = (y: number) => pad + y * s;
+  const cx = vertices.reduce((t, p) => t + p.x, 0) / vertices.length;
+  const cy = vertices.reduce((t, p) => t + p.y, 0) / vertices.length;
+  // Nhãn đặt ra phía ngoài hình, theo hướng từ tâm hình tới điểm
+  const away = (p: GridPoint, dist: number) => {
+    const dx = p.x - cx;
+    const dy = p.y - cy;
+    const d = Math.hypot(dx, dy) || 1;
+    return [X(p.x) + (dx / d) * dist, Y(p.y) + (dy / d) * dist + 7];
+  };
+  return (
+    <svg viewBox={`0 0 ${width * s + pad * 2} ${height * s + pad * 2}`} className="w-full max-w-xl mx-auto">
+      <g stroke="#a9cdf5" strokeWidth={1.5}>
+        {Array.from({ length: width + 1 }, (_, i) => (
+          <line key={`v${i}`} x1={X(i)} y1={Y(0)} x2={X(i)} y2={Y(height)} />
+        ))}
+        {Array.from({ length: height + 1 }, (_, j) => (
+          <line key={`h${j}`} x1={X(0)} y1={Y(j)} x2={X(width)} y2={Y(j)} />
+        ))}
+      </g>
+      <polygon points={vertices.map((p) => `${X(p.x)},${Y(p.y)}`).join(' ')} fill="none" stroke={INK} strokeWidth={3.5} strokeLinejoin="round" />
+      {vertices.map((p) => {
+        const [lx, ly] = away(p, 22);
+        return (
+          <g key={p.label}>
+            <circle cx={X(p.x)} cy={Y(p.y)} r={5} fill={INK} />
+            <text x={lx} y={ly} textAnchor="middle" fontSize={22} fontWeight={800} fill={INK} fontFamily="Nunito">
+              {p.label}
+            </text>
+          </g>
+        );
+      })}
+      {marks.map((p) => {
+        const [lx, ly] = away(p, 24);
+        return (
+          <g key={p.label}>
+            <circle cx={X(p.x)} cy={Y(p.y)} r={6} fill={PINK} stroke={INK} strokeWidth={2} />
+            <text x={lx} y={ly} textAnchor="middle" fontSize={22} fontWeight={800} fill="#b5179e" fontFamily="Nunito">
+              {p.label}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/** Khối hộp chữ nhật ghép từ các khối lập phương nhỏ (vẽ kiểu SGK: mặt trước, mặt trên, mặt bên). */
+function CubeStack({ a, b, c }: { a: number; b: number; c: number }) {
+  const s = 44;
+  const k = 20;
+  const x0 = 16;
+  const y0 = 16 + b * k;
+  const fx = x0 + a * s;
+  const pt = (x: number, y: number) => `${x},${y}`;
+  const lines: [number, number, number, number][] = [];
+  for (let i = 1; i < a; i++) lines.push([x0 + i * s, y0, x0 + i * s, y0 + c * s], [x0 + i * s, y0, x0 + i * s + b * k, y0 - b * k]);
+  for (let j = 1; j < c; j++) lines.push([x0, y0 + j * s, fx, y0 + j * s], [fx, y0 + j * s, fx + b * k, y0 + j * s - b * k]);
+  for (let d = 1; d < b; d++) lines.push([x0 + d * k, y0 - d * k, fx + d * k, y0 - d * k], [fx + d * k, y0 - d * k, fx + d * k, y0 - d * k + c * s]);
+  return (
+    <svg viewBox={`0 0 ${fx + b * k + 16} ${y0 + c * s + 16}`} className="w-60 sm:w-72 mx-auto">
+      <g stroke={INK} strokeWidth={3} strokeLinejoin="round">
+        <polygon points={[pt(x0, y0), pt(fx, y0), pt(fx, y0 + c * s), pt(x0, y0 + c * s)].join(' ')} fill="#ff9cc8" />
+        <polygon points={[pt(x0, y0), pt(fx, y0), pt(fx + b * k, y0 - b * k), pt(x0 + b * k, y0 - b * k)].join(' ')} fill="#ffc8e0" />
+        <polygon points={[pt(fx, y0), pt(fx + b * k, y0 - b * k), pt(fx + b * k, y0 - b * k + c * s), pt(fx, y0 + c * s)].join(' ')} fill="#ec6fa9" />
+      </g>
+      <g stroke={INK} strokeWidth={2}>
+        {lines.map(([x1, y1, x2, y2]) => (
+          <line key={`${x1}-${y1}-${x2}-${y2}`} x1={x1} y1={y1} x2={x2} y2={y2} />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+/** Hình ghép để đếm số hình. */
+function CountShapes({ shape }: { shape: CountShape }) {
+  const stroke = { stroke: INK, strokeWidth: 3.5, strokeLinejoin: 'round' as const, fill: 'none' };
+  let body: ReactNode;
+  if (shape === 'fan-2' || shape === 'fan-3') {
+    const n = shape === 'fan-2' ? 2 : 3;
+    const [ax, ay, bx, cx, by] = [130, 20, 20, 240, 180];
+    body = (
+      <>
+        <polygon points={`${ax},${ay} ${bx},${by} ${cx},${by}`} {...stroke} fill={SOFT} />
+        {Array.from({ length: n - 1 }, (_, i) => {
+          const x = bx + ((cx - bx) * (i + 1)) / n;
+          return <line key={i} x1={ax} y1={ay} x2={x} y2={by} {...stroke} />;
+        })}
+      </>
+    );
+  } else if (shape === 'strips-2' || shape === 'strips-3') {
+    const n = shape === 'strips-2' ? 2 : 3;
+    const w = 66;
+    const x0 = (260 - n * w) / 2;
+    body = (
+      <>
+        <rect x={x0} y={50} width={n * w} height={90} {...stroke} fill={SOFT} />
+        {Array.from({ length: n - 1 }, (_, i) => (
+          <line key={i} x1={x0 + (i + 1) * w} y1={50} x2={x0 + (i + 1) * w} y2={140} {...stroke} />
+        ))}
+      </>
+    );
+  } else if (shape === 'grid-2x2') {
+    body = (
+      <>
+        <rect x={50} y={20} width={160} height={160} {...stroke} fill={SOFT} />
+        <line x1={130} y1={20} x2={130} y2={180} {...stroke} />
+        <line x1={50} y1={100} x2={210} y2={100} {...stroke} />
+      </>
+    );
+  } else {
+    body = (
+      <>
+        <rect x={50} y={20} width={160} height={160} {...stroke} fill={SOFT} />
+        <line x1={50} y1={20} x2={210} y2={180} {...stroke} />
+        <line x1={210} y1={20} x2={50} y2={180} {...stroke} />
+      </>
+    );
+  }
+  return (
+    <svg viewBox="0 0 260 200" className="w-60 mx-auto">
+      {body}
+    </svg>
+  );
+}
+
+/** Đồ vật xếp thành các hàng bằng nhau; hàng đầu được khoanh bằng nét đứt. */
+function Items({ emoji, total, marked }: { emoji: string; total: number; marked: number }) {
+  const rows = total / marked;
+  return (
+    <div className="flex flex-col items-center gap-1" aria-label={`${total} đồ vật`}>
+      {Array.from({ length: rows }, (_, r) => (
+        <div
+          key={r}
+          className={`px-3 py-0.5 text-2xl sm:text-3xl tracking-wide rounded-full border-4 ${r === 0 ? 'border-dashed border-primary bg-primary/10' : 'border-transparent'}`}
+        >
+          {emoji.repeat(marked)}
+        </div>
+      ))}
+    </div>
   );
 }

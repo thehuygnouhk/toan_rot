@@ -5,21 +5,30 @@ export type Mood = 'happy' | 'think' | 'cheer';
 
 const LINE = '#4a3b5c';
 
-/** Thỏ Rốt — linh vật của trang. Có thể mặc đồ mua ở tủ đồ. */
+/** Thỏ Rốt — linh vật của trang. Mặc đồ ở tủ đồ, theo màu bé chọn; phông nền chỉ vẽ khi `background`. */
 export function Bunny({
   mood = 'happy',
   equipped = {},
+  colors = {},
+  background = false,
   className,
   title = 'Thỏ Rốt',
 }: {
   mood?: Mood;
   equipped?: Partial<Record<Slot, string>>;
+  colors?: Record<string, string>;
+  background?: boolean;
   className?: string;
   title?: string;
 }) {
-  const art = (slot: Slot) => (equipped[slot] ? ITEM_BY_ID.get(equipped[slot])?.art : null);
+  const art = (slot: Slot) => {
+    const item = equipped[slot] ? ITEM_BY_ID.get(equipped[slot]) : undefined;
+    return item ? item.art(colors[item.id] ?? item.color ?? '') : null;
+  };
   return (
     <svg viewBox="0 0 200 240" className={className} role="img" aria-label={title}>
+      {background && art('nen')}
+      {art('lung')}
       <g stroke={LINE} strokeWidth={4} strokeLinejoin="round">
         {/* tai */}
         <g transform="rotate(-12 74 52)">
@@ -37,6 +46,7 @@ export function Bunny({
         <ellipse cx={120} cy={226} rx={16} ry={9} fill="#fff" />
       </g>
       {art('than')}
+      {art('chan')}
       <g stroke={LINE} strokeWidth={4}>
         {/* tay */}
         <ellipse cx={62} cy={182} rx={10} ry={17} fill="#fff" transform="rotate(20 62 182)" />

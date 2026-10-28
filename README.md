@@ -2,7 +2,7 @@
 
 Trang web giúp bé gái lớp 3 **thích học Toán** qua tô màu, thời trang và nhân vật dễ thương — bám sát chương trình Toán lớp 3 sách mới (GDPT 2018, bộ Kết nối tri thức).
 
-> **Bản hiện tại: ôn thi giữa học kì 1 (Bài 1 – Bài 22).** 9 trạm ôn (có trạm Đồng hồ và đo lường của Bài 7) + đề thi thử, Xưởng Tô Màu, Tủ đồ Thỏ Rốt, bảng tiến độ cho bố mẹ. Xem mục ⚡ trong [docs/03-kich-ban-xay-dung.md](docs/03-kich-ban-xay-dung.md).
+> **Bản hiện tại: ôn thi giữa học kì 1 (Bài 1 – Bài 22).** 10 trạm ôn (có Đồng hồ và đo lường của Bài 7, Thử thách hình vẽ như vở bài tập) + đề thi thử, Sàn diễn thời trang, nhiệm vụ hằng ngày và vườn hoa chăm học, Xưởng Tô Màu, Tủ đồ Thỏ Rốt (đổi màu, đồ đặc biệt), bảng tiến độ cho bố mẹ. Xem mục ⚡ trong [docs/03-kich-ban-xay-dung.md](docs/03-kich-ban-xay-dung.md).
 
 ## Chạy trên máy
 
@@ -15,7 +15,7 @@ npm run dev        # mở http://localhost:5173
 
 | Lệnh | Làm gì |
 |---|---|
-| `npm test` | Chạy hơn 100 test: câu hỏi đúng phạm vi, đáp án đúng, lưu tiến độ… |
+| `npm test` | Chạy hơn 120 test: câu hỏi đúng phạm vi, đáp án khớp hình vẽ, lưu tiến độ, nhiệm vụ… |
 | `npm run lint` / `npm run typecheck` | Kiểm tra code |
 | `npm run build` | Tạo bản web tĩnh trong `dist/` (mở được ở bất kỳ đâu) |
 
@@ -27,11 +27,12 @@ Tiến độ, cà rốt và tranh của bé **chỉ lưu trên trình duyệt c�
 
 ```
 src/engine/questions/   bộ sinh câu hỏi theo bài (cd01, cd02, cd03) + test
-src/engine/progress/    lưu tiến độ (Dexie), điểm thành thạo, cà rốt, sao
+src/engine/progress/    lưu tiến độ (Dexie), điểm thành thạo, cà rốt, sao, nhiệm vụ, thành tích
 src/features/onthi/     bản đồ ôn thi, các trạm, đề thi thử
 src/features/quiz/      màn làm bài dùng chung, hình minh hoạ SVG
 src/features/coloring/  Xưởng Tô Màu (tranh SVG theo vùng)
-src/features/wardrobe/  Tủ đồ Thỏ Rốt
+src/features/wardrobe/  Tủ đồ Thỏ Rốt (đồ, màu, đồ đặc biệt)
+src/features/fashion/   Sàn diễn thời trang
 src/features/parent/    bảng tiến độ, xem trước câu hỏi
 src/ui/                 Thỏ Rốt, nút, âm thanh, đọc to, pháo giấy
 ```

@@ -1,7 +1,7 @@
 import { createRng, type Rng } from '../rng';
 import { congTru1000, divisionFact, doLuong, loiVanCongTru, multiplicationFact, soDen1000, soSanh1000, timThanhPhanCongTru, xemDongHo } from './cd01';
 import { loiVanNhanChia, motPhanMayHinh, motPhanMaySo, timThanhPhanNhanChia } from './cd02';
-import { gocVuong, hinhPhang, hinhTron, khoiHinh, trungDiem } from './cd03';
+import { demHinh, gocVuong, hinhPhang, hinhTron, hinhTronUngDung, khoiGhep, khoiHinh, trungDiem } from './cd03';
 import { toSpeech } from './format';
 import type { Choice, Draft, Question, SkillId, SkillInfo } from './types';
 
@@ -25,9 +25,12 @@ export const SKILLS: Record<SkillId, SkillInfo> = {
   'loi-van-nhan-chia': { id: 'loi-van-nhan-chia', topicId: 'CD02', name: 'Toán có lời văn nhân, chia', lessons: 'Bài 4–15', generate: loiVanNhanChia },
   'trung-diem': { id: 'trung-diem', topicId: 'CD03', name: 'Điểm ở giữa, trung điểm', lessons: 'Bài 16', generate: trungDiem },
   'hinh-tron': { id: 'hinh-tron', topicId: 'CD03', name: 'Hình tròn: tâm, bán kính, đường kính', lessons: 'Bài 17', generate: hinhTron },
+  'hinh-tron-ung-dung': { id: 'hinh-tron-ung-dung', topicId: 'CD03', name: 'Hình tròn trong hình vẽ: kiến bò, cúc áo', lessons: 'Bài 17, 22', generate: hinhTronUngDung },
   'goc-vuong': { id: 'goc-vuong', topicId: 'CD03', name: 'Góc vuông, góc không vuông', lessons: 'Bài 18', generate: gocVuong },
   'hinh-phang': { id: 'hinh-phang', topicId: 'CD03', name: 'Tam giác, tứ giác, HCN, hình vuông', lessons: 'Bài 19', generate: hinhPhang },
+  'dem-hinh': { id: 'dem-hinh', topicId: 'CD03', name: 'Đếm hình', lessons: 'Bài 19, 22', generate: demHinh },
   'khoi-hinh': { id: 'khoi-hinh', topicId: 'CD03', name: 'Khối lập phương, hộp chữ nhật, trụ, cầu', lessons: 'Bài 7, 21', generate: khoiHinh },
+  'khoi-ghep': { id: 'khoi-ghep', topicId: 'CD03', name: 'Ghép khối lập phương nhỏ, sơn mặt', lessons: 'Bài 21', generate: khoiGhep },
 };
 
 export const ALL_SKILLS = Object.keys(SKILLS) as SkillId[];

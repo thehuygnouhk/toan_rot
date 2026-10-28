@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { db, type Artwork, type Profile, type Slot, type StationStat } from './db';
 import { emptyStat, updateStat, type AnswerResult, type SkillStat } from './mastery';
+import { ALL_QUESTS_BONUS, learningDays, startOfDay, type AchievementData, type TodayData } from './rewards';
 
 export const STARTING_CARROTS = 20;
 
@@ -63,6 +64,60 @@ export async function equipItem(slot: Slot, itemId: string | undefined): Promise
   await db.profile.where('id').equals('me').modify((p) => {
     if (itemId) p.equipped[slot] = itemId;
     else delete p.equipped[slot];
+    p.dressedAt = Date.now();
+  });
+  changed();
+}
+
+/** Bé tự chọn màu cho món đồ đã có. */
+export async function setItemColor(itemId: string, color: string): Promise<void> {
+  await db.profile.where('id').equals('me').modify((p) => {
+    p.colors = { ...p.colors, [itemId]: color };
+    p.dressedAt = Date.now();
+  });
+  changed();
+}
+
+/** Nhận đồ đặc biệt (miễn phí) khi đã đạt thành tích. */
+export async function claimItem(itemId: string): Promise<void> {
+  await db.profile.where('id').equals('me').modify((p) => {
+    if (!p.owned.includes(itemId)) p.owned = [...p.owned, itemId];
+  });
+  changed();
+}
+
+/** Nhận thưởng một nhiệm vụ trong ngày `day`. Trả về false nếu đã nhận rồi. */
+export async function claimQuest(day: string, questId: string, reward: number): Promise<boolean> {
+  const ok = await db.transaction('rw', db.profile, async () => {
+    const p = await db.profile.get('me');
+    if (!p) return false;
+    const quests = p.quests?.day === day ? p.quests : { day, claimed: [], bonus: false };
+    if (quests.claimed.includes(questId)) return false;
+    await db.profile.put({ ...p, carrots: p.carrots + reward, quests: { ...quests, claimed: [...quests.claimed, questId] } });
+    return true;
+  });
+  if (ok) changed();
+  return ok;
+}
+
+/** Hộp quà khi xong cả 3 nhiệm vụ trong ngày. */
+export async function claimQuestBonus(day: string): Promise<boolean> {
+  const ok = await db.transaction('rw', db.profile, async () => {
+    const p = await db.profile.get('me');
+    if (!p || p.quests?.day !== day || p.quests.bonus || p.quests.claimed.length < 3) return false;
+    await db.profile.put({ ...p, carrots: p.carrots + ALL_QUESTS_BONUS, quests: { ...p.quests, bonus: true } });
+    return true;
+  });
+  if (ok) changed();
+  return ok;
+}
+
+/** Xong một buổi trình diễn trên Sàn diễn. */
+export async function finishShow(bonus: number): Promise<void> {
+  await db.profile.where('id').equals('me').modify((p) => {
+    p.shows = (p.shows ?? 0) + 1;
+    p.lastShowAt = Date.now();
+    p.carrots += bonus;
   });
   changed();
 }
@@ -104,6 +159,53 @@ const readProfile = async (): Promise<Profile | undefined> => (await db.profile.
 const readSkills = (): Promise<SkillStat[]> => db.skills.toArray();
 const readStations = (): Promise<StationStat[]> => db.stations.toArray();
 const readArtworks = (): Promise<Artwork[]> => db.artworks.orderBy('completedAt').reverse().toArray();
+
+const readLearningDays = async (): Promise<string[]> => learningDays((await db.answers.orderBy('at').keys()) as number[]);
+
+async function readToday(): Promise<TodayData> {
+  const start = startOfDay(Date.now());
+  const [answers, stations, artworks, profile] = await Promise.all([
+    db.answers.where('at').aboveOrEqual(start).toArray(),
+    db.stations.toArray(),
+    db.artworks.where('completedAt').aboveOrEqual(start).count(),
+    db.profile.get('me'),
+  ]);
+  return {
+    correct: answers.filter((a) => a.result !== 'wrong').length,
+    stationsDone: stations.filter((s) => s.lastAt >= start).map((s) => s.stationId),
+    artworks,
+    dressed: (profile?.dressedAt ?? 0) >= start,
+    showed: (profile?.lastShowAt ?? 0) >= start,
+  };
+}
+
+const EMPTY_TODAY: TodayData = { correct: 0, stationsDone: [], artworks: 0, dressed: false, showed: false };
+
+async function readAchievementData(): Promise<AchievementData> {
+  const [stations, artworks, profile, days] = await Promise.all([db.stations.toArray(), db.artworks.count(), db.profile.get('me'), readLearningDays()]);
+  return {
+    practiceStars: stations.filter((s) => s.stationId !== 'de-thi-thu').map((s) => s.bestStars),
+    examStars: stations.find((s) => s.stationId === 'de-thi-thu')?.bestStars ?? 0,
+    shows: profile?.shows ?? 0,
+    artworks,
+    days: days.length,
+  };
+}
+
+const EMPTY_ACHIEVEMENTS: AchievementData = { practiceStars: [], examStars: 0, shows: 0, artworks: 0, days: 0 };
+
+/** Các ngày bé đã học (cho vườn hoa). */
+export function useLearningDays() {
+  return useDbQuery(readLearningDays, []);
+}
+
+export function useToday() {
+  return useDbQuery(readToday, EMPTY_TODAY);
+}
+
+export function useAchievementData() {
+  return useDbQuery(readAchievementData, EMPTY_ACHIEVEMENTS);
+}
 
 /** null = đang tải; undefined = chưa có hồ sơ. */
 export function useProfile(): Profile | undefined | null {

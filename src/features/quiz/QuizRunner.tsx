@@ -20,8 +20,23 @@ type Phase = 'answer' | 'correct' | 'reveal';
 const MAX_TRIES = 3;
 const MAX_REQUEUE = 2;
 
-/** Màn làm bài dùng chung: gợi ý 3 bậc, không phạt, thưởng cà rốt (skill vong-lap-hoc-va-thuong). */
-export function QuizRunner({ questions, mode, onFinish }: { questions: Question[]; mode: 'practice' | 'exam'; onFinish: (results: QuizResult[]) => void }) {
+/**
+ * Màn làm bài dùng chung: gợi ý 3 bậc, không phạt, thưởng cà rốt (skill vong-lap-hoc-va-thuong).
+ * `requeue`: câu sai được hỏi lại một câu cùng dạng ở cuối bài. `onSettle`: báo mỗi khi xong một câu.
+ */
+export function QuizRunner({
+  questions,
+  mode,
+  onFinish,
+  requeue = true,
+  onSettle,
+}: {
+  questions: Question[];
+  mode: 'practice' | 'exam';
+  onFinish: (results: QuizResult[]) => void;
+  requeue?: boolean;
+  onSettle?: (result: AnswerResult) => void;
+}) {
   const profile = useProfile();
   const [queue, setQueue] = useState(questions);
   const [index, setIndex] = useState(0);
@@ -44,13 +59,14 @@ export function QuizRunner({ questions, mode, onFinish }: { questions: Question[
     void recordAnswer(q.skillId, result, mode);
     void addCarrots(carrotsFor(result));
     setResults((r) => [...r, { question: q, result }]);
+    onSettle?.(result);
   }
 
   function reveal() {
     settle('wrong');
     setPhase('reveal');
     setStreak(0);
-    if (!exam && requeued < MAX_REQUEUE) {
+    if (!exam && requeue && requeued < MAX_REQUEUE) {
       // Hỏi lại một câu cùng dạng ở cuối bài để bé luyện thêm
       setQueue((qs) => [...qs, makeQuestion(q.skillId, randomSeed())]);
       setRequeued((n) => n + 1);
@@ -122,7 +138,7 @@ export function QuizRunner({ questions, mode, onFinish }: { questions: Question[
 
       <section className="sticker p-4 md:p-6 flex flex-col gap-4">
         <div className="flex items-start gap-3">
-          <Bunny mood={mood} equipped={profile?.equipped} className={`w-14 sm:w-20 md:w-24 shrink-0 ${phase === 'correct' ? 'anim-hop' : ''}`} />
+          <Bunny mood={mood} equipped={profile?.equipped} colors={profile?.colors} className={`w-14 sm:w-20 md:w-24 shrink-0 ${phase === 'correct' ? 'anim-hop' : ''}`} />
           <p className="font-display text-xl sm:text-2xl md:text-3xl font-bold leading-snug flex-1 min-w-0 pt-2">{q.prompt}</p>
           <ReadAloudButton text={q.speak} className="shrink-0" />
         </div>

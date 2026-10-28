@@ -15,10 +15,12 @@ Cháu học **Kết nối tri thức**, đã học xong **Bài 22** (hết Chủ
 | Phần | Nội dung | Tương ứng giai đoạn |
 |---|---|---|
 | Khung web + giao diện dễ thương | Vite + React + TypeScript, Tailwind + daisyUI theme pastel, font Baloo 2 / Nunito, nút đọc to giọng Việt, âm thanh Web Audio, pháo giấy | GĐ1 |
-| Bộ sinh câu hỏi Bài 1–22 | 20 dạng bài (số đến 1 000, cộng trừ có nhớ ≤ 1 lượt, lời văn thêm/bớt/nhiều hơn/ít hơn, tìm thành phần, bảng nhân chia 2–9, **xem đồng hồ, đổi cm–dm–m–km, kg, lít, đường gấp khúc (Bài 7)**, một phần mấy, lời văn nhân chia, trung điểm, hình tròn, góc vuông, hình phẳng, khối lập phương/hộp/trụ/cầu), hình minh hoạ SVG kiểu SGK, đáp án nhiễu theo lỗi sai thật, **hơn 100 test tự động** | GĐ2 (CD01–CD03) |
-| Ôn thi giữa kì | 9 trạm ôn theo bài + **đề thi thử 15 câu** (không gợi ý) + màn kết quả chỉ ra phần cần ôn | GĐ3 |
+| Bộ sinh câu hỏi Bài 1–22 | 23 dạng bài (số đến 1 000, cộng trừ có nhớ ≤ 1 lượt, lời văn thêm/bớt/nhiều hơn/ít hơn, tìm thành phần, bảng nhân chia 2–9, **xem đồng hồ, đổi cm–dm–m–km, kg, lít, đường gấp khúc (Bài 7)**, một phần mấy (hình và nhóm đồ vật khoanh), lời văn nhân chia có ngữ cảnh tiệm may, trung điểm (cả trên tam giác lưới ô vuông), hình tròn (có dây cung), **kiến bò qua các hình tròn, hình tròn xếp vừa khít trong hình chữ nhật, đếm hình, ghép khối lập phương và sơn mặt** (như vở bài tập), góc vuông, hình phẳng, khối lập phương/hộp/trụ/cầu), hình minh hoạ SVG kiểu SGK, đáp án nhiễu theo lỗi sai thật, **hơn 120 test tự động** | GĐ2 (CD01–CD03) |
+| Ôn thi giữa kì | 10 trạm ôn theo bài (có trạm 🧩 Thử thách hình vẽ) + **đề thi thử 15 câu** (không gợi ý) + màn kết quả chỉ ra phần cần ôn | GĐ3 |
 | Tiến độ và thưởng | Lưu trên máy (IndexedDB), điểm thành thạo từng kỹ năng, gợi ý 3 bậc, cà rốt, sao, hỏi lại câu sai | GĐ3 |
-| Tủ đồ Thỏ Rốt | 15 món: nơ, vương miện, vòng hoa, kính, vòng ngọc trai, khăn, 4 váy, đũa phép, bóng bay, túi xách | GĐ4 (bản rút gọn) |
+| Tủ đồ Thỏ Rốt | 28 món trong 8 ngăn (trên đầu, kính, cổ, váy áo, giày, cầm tay, sau lưng, phông nền); **bé tự đổi màu** đồ; 5 **đồ đặc biệt** chỉ mở khoá bằng thành tích (3 sao ở 3 trạm, 3 sao đề thi thử, trình diễn, tô 3 tranh, học 3 ngày) | GĐ4 (bản rút gọn) |
+| Sàn diễn thời trang | 8 câu trộn (ưu tiên dạng bé còn yếu); mỗi câu xong Thỏ Rốt bước một bước trên sàn, đúng ngay lần đầu được đèn flash 📸; cuối buổi có poster "Người mẫu nhí" | GĐ4 (sàn diễn) |
+| Nhiệm vụ hằng ngày, vườn hoa | 3 nhiệm vụ mỗi ngày (làm bài, hoàn thành trạm, sáng tạo) × 🥕 5, xong cả 3 mở hộp quà; mỗi ngày học nở một bông hoa, nghỉ không làm héo vườn | GĐ3 (vòng lặp thưởng) |
 | Xưởng Tô Màu | 3 tranh bí mật (bánh kem, váy công chúa, kem ốc quế) × 4 loại phép tính, tô tự do, bộ sưu tập | GĐ5 (chưa có vẽ tay) |
 | Trang bố mẹ | Bảng tiến độ theo chủ đề, "nên ôn thêm", trang **Xem trước câu hỏi** có đáp án | GĐ10 (một phần) |
 
