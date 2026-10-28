@@ -19,6 +19,12 @@ export function toSpeech(text: string): string {
     .replace(/ > /g, ' lớn hơn ')
     .replace(/ < /g, ' bé hơn ')
     .replace(/\bcm\b/g, 'xăng-ti-mét')
+    // \b không hiểu chữ có dấu ("lọ", "mặt"), nên chặn hai bên bằng \p{L} (không dùng lookbehind: iPad cũ không hỗ trợ)
+    .replace(/(^|[^\p{L}])dm(?!\p{L})/gu, '$1đề-xi-mét')
+    .replace(/(^|[^\p{L}])km(?!\p{L})/gu, '$1ki-lô-mét')
+    .replace(/(^|[^\p{L}])kg(?!\p{L})/gu, '$1ki-lô-gam')
+    .replace(/(\d|mấy) m(?!\p{L})/gu, '$1 mét')
+    .replace(/(\d|mấy) l(?!\p{L})/gu, '$1 lít')
     .replace(/(\d)\/(\d)/g, '$1 phần $2')
     .replace(/\s+/g, ' ')
     .trim();

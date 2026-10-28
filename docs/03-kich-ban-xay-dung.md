@@ -15,8 +15,8 @@ Cháu học **Kết nối tri thức**, đã học xong **Bài 22** (hết Chủ
 | Phần | Nội dung | Tương ứng giai đoạn |
 |---|---|---|
 | Khung web + giao diện dễ thương | Vite + React + TypeScript, Tailwind + daisyUI theme pastel, font Baloo 2 / Nunito, nút đọc to giọng Việt, âm thanh Web Audio, pháo giấy | GĐ1 |
-| Bộ sinh câu hỏi Bài 1–22 | 17 dạng bài (số đến 1 000, cộng trừ có nhớ ≤ 1 lượt, tìm thành phần, bảng nhân chia 2–9, một phần mấy, lời văn, trung điểm, hình tròn, góc vuông, hình phẳng, hình khối), hình minh hoạ SVG kiểu SGK, đáp án nhiễu theo lỗi sai thật, **83 test tự động** | GĐ2 (CD01–CD03) |
-| Ôn thi giữa kì | 8 trạm ôn theo bài + **đề thi thử 15 câu** (không gợi ý) + màn kết quả chỉ ra phần cần ôn | GĐ3 |
+| Bộ sinh câu hỏi Bài 1–22 | 20 dạng bài (số đến 1 000, cộng trừ có nhớ ≤ 1 lượt, lời văn thêm/bớt/nhiều hơn/ít hơn, tìm thành phần, bảng nhân chia 2–9, **xem đồng hồ, đổi cm–dm–m–km, kg, lít, đường gấp khúc (Bài 7)**, một phần mấy, lời văn nhân chia, trung điểm, hình tròn, góc vuông, hình phẳng, khối lập phương/hộp/trụ/cầu), hình minh hoạ SVG kiểu SGK, đáp án nhiễu theo lỗi sai thật, **hơn 100 test tự động** | GĐ2 (CD01–CD03) |
+| Ôn thi giữa kì | 9 trạm ôn theo bài + **đề thi thử 15 câu** (không gợi ý) + màn kết quả chỉ ra phần cần ôn | GĐ3 |
 | Tiến độ và thưởng | Lưu trên máy (IndexedDB), điểm thành thạo từng kỹ năng, gợi ý 3 bậc, cà rốt, sao, hỏi lại câu sai | GĐ3 |
 | Tủ đồ Thỏ Rốt | 15 món: nơ, vương miện, vòng hoa, kính, vòng ngọc trai, khăn, 4 váy, đũa phép, bóng bay, túi xách | GĐ4 (bản rút gọn) |
 | Xưởng Tô Màu | 3 tranh bí mật (bánh kem, váy công chúa, kem ốc quế) × 4 loại phép tính, tô tự do, bộ sưu tập | GĐ5 (chưa có vẽ tay) |

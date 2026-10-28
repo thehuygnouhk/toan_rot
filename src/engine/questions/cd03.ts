@@ -241,12 +241,14 @@ export function khoiHinh(rng: Rng): Draft {
     ['Viên gạch 🧱', 'Khối hộp chữ nhật'],
     ['Hộp sữa 🧃', 'Khối hộp chữ nhật'],
     ['Viên đá lạnh 🧊', 'Khối lập phương'],
+    ['Quả bóng ⚽', 'Khối cầu'],
+    ['Lon sữa 🥫', 'Khối trụ'],
   ] as const);
   return {
     prompt: `${thing} có dạng khối gì?`,
     answer,
     options: ['Khối lập phương', 'Khối hộp chữ nhật', 'Khối cầu', 'Khối trụ'],
-    hints: ['Nhìn xem các mặt của đồ vật là hình vuông hay hình chữ nhật.'],
+    hints: ['Tròn đều như quả bóng là khối cầu; tròn như ống, hai đáy là hình tròn là khối trụ.', 'Các mặt đều là hình vuông là khối lập phương; có mặt hình chữ nhật là khối hộp chữ nhật.'],
     solution: `${thing.split(' ').slice(0, -1).join(' ')} có dạng ${answer.toLowerCase()}.`,
   };
 }

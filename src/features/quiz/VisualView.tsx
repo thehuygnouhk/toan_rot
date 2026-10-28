@@ -21,6 +21,10 @@ export function VisualView({ visual }: { visual: Visual }) {
       return <Polygon {...visual} />;
     case 'solid':
       return <Solid {...visual} />;
+    case 'clock':
+      return <Clock {...visual} />;
+    case 'polyline':
+      return <Polyline {...visual} />;
   }
 }
 
@@ -213,6 +217,85 @@ function Solid({ solid }: { solid: 'cube' | 'box' }) {
         <line x1={x} y1={y + h} x2={x + d} y2={y + h - d} />
         <line x1={x + d} y1={y + h - d} x2={x + w + d} y2={y + h - d} />
       </g>
+    </svg>
+  );
+}
+
+/** Đồng hồ kim như trong SGK: 12 số, vạch phút, kim ngắn chỉ giờ, kim dài chỉ phút. */
+function Clock({ hour, minute }: { hour: number; minute: number }) {
+  const c = 120;
+  const r = 100;
+  const at = (deg: number, len: number) => [c + len * Math.cos(((deg - 90) * Math.PI) / 180), c + len * Math.sin(((deg - 90) * Math.PI) / 180)];
+  // Kim dừng trước vòng số để không che số
+  const [hx, hy] = at(((hour % 12) + minute / 60) * 30, 42);
+  const [mx, my] = at(minute * 6, 62);
+  return (
+    <svg viewBox="0 0 240 240" className="w-56 h-56 mx-auto">
+      <circle cx={c} cy={c} r={r + 8} fill="#ffd6e7" />
+      <circle cx={c} cy={c} r={r} fill="#fff" stroke={INK} strokeWidth={5} />
+      {Array.from({ length: 60 }, (_, i) => {
+        const big = i % 5 === 0;
+        const [x1, y1] = at(i * 6, r - (big ? 12 : 6));
+        const [x2, y2] = at(i * 6, r - 2);
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={INK} strokeWidth={big ? 3 : 1.5} strokeLinecap="round" />;
+      })}
+      {Array.from({ length: 12 }, (_, i) => {
+        const [x, y] = at((i + 1) * 30, r - 24);
+        return (
+          <text key={i} x={x} y={y + 8} textAnchor="middle" fontSize={22} fontWeight={800} fill={INK} fontFamily="Nunito">
+            {i + 1}
+          </text>
+        );
+      })}
+      <line x1={c} y1={c} x2={hx} y2={hy} stroke={INK} strokeWidth={9} strokeLinecap="round" />
+      <line x1={c} y1={c} x2={mx} y2={my} stroke={INK} strokeWidth={5} strokeLinecap="round" />
+      <circle cx={c} cy={c} r={8} fill={PINK} stroke={INK} strokeWidth={2} />
+    </svg>
+  );
+}
+
+/** Đường gấp khúc lên xuống xen kẽ, đỉnh đặt tên A, B, C…, mỗi đoạn ghi độ dài. */
+function Polyline({ lengths, unit }: { lengths: number[]; unit: string }) {
+  const total = lengths.reduce((s, x) => s + x, 0);
+  const pts: [number, number][] = [[0, 0]];
+  lengths.forEach((len, i) => {
+    const d = 100 + (len / total) * 220;
+    const deg = i % 2 === 0 ? -35 : 30;
+    const [x, y] = pts[i];
+    pts.push([x + d * Math.cos((deg * Math.PI) / 180), y + d * Math.sin((deg * Math.PI) / 180)]);
+  });
+  const xs = pts.map((p) => p[0]);
+  const ys = pts.map((p) => p[1]);
+  const pad = 40;
+  const [minX, minY] = [Math.min(...xs) - pad, Math.min(...ys) - pad];
+  const [w, h] = [Math.max(...xs) - minX + pad, Math.max(...ys) - minY + pad];
+  return (
+    <svg viewBox={`${minX} ${minY} ${w} ${h}`} className="w-full max-w-xl mx-auto">
+      <polyline points={pts.map((p) => p.join(',')).join(' ')} fill="none" stroke={INK} strokeWidth={4} strokeLinejoin="round" strokeLinecap="round" />
+      {lengths.map((len, i) => {
+        const [x1, y1] = pts[i];
+        const [x2, y2] = pts[i + 1];
+        // Ghi độ dài phía trên đoạn thẳng, lệch theo pháp tuyến để chữ không đè lên nét
+        const d = Math.hypot(x2 - x1, y2 - y1);
+        let [nx, ny] = [(y2 - y1) / d, -(x2 - x1) / d];
+        if (ny > 0) [nx, ny] = [-nx, -ny];
+        return (
+          <text key={i} x={(x1 + x2) / 2 + nx * 24} y={(y1 + y2) / 2 + ny * 24 + 7} textAnchor="middle" fontSize={20} fontWeight={800} fill={PINK} fontFamily="Nunito">
+            {len} {unit}
+          </text>
+        );
+      })}
+      {pts.map(([x, y], i) => {
+        const peak = i > 0 && i < pts.length - 1 && y < pts[i - 1][1];
+        return (
+          <g key={i}>
+            <circle cx={x} cy={y} r={5} fill={INK} />
+            <text x={x} y={peak ? y - 14 : y + 28} textAnchor="middle" fontSize={20} fontWeight={800} fill={INK} fontFamily="Nunito">
+              {String.fromCharCode(65 + i)}
+            </text>
+          </g>
+        );
+      })}
     </svg>
   );
 }
