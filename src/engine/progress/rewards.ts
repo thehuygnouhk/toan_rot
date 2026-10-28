@@ -28,9 +28,10 @@ export interface TodayData {
   artworks: number;
   dressed: boolean;
   showed: boolean;
+  played: boolean;
 }
 
-export type QuestId = 'dung-10' | 'dung-15' | 'xong-tram' | 'xong-2-tram' | 'thu-thach' | 'to-tranh' | 'thay-do' | 'san-dien';
+export type QuestId = 'dung-10' | 'dung-15' | 'xong-tram' | 'xong-2-tram' | 'thu-thach' | 'to-tranh' | 'thay-do' | 'san-dien' | 'tro-choi';
 
 export interface Quest {
   id: QuestId;
@@ -50,6 +51,7 @@ const QUESTS: Record<QuestId, Quest> = {
   'to-tranh': { id: 'to-tranh', emoji: '🎨', text: 'Tô xong 1 bức tranh', goal: 1, to: '/to-mau' },
   'thay-do': { id: 'thay-do', emoji: '👗', text: 'Thay đồ hoặc đổi màu váy cho Thỏ Rốt', goal: 1, to: '/tu-do' },
   'san-dien': { id: 'san-dien', emoji: '✨', text: 'Trình diễn 1 lần trên Sàn diễn', goal: 1, to: '/san-dien' },
+  'tro-choi': { id: 'tro-choi', emoji: '🎮', text: 'Chơi xong 1 trò chơi', goal: 1, to: '/tro-choi' },
 };
 
 export const QUEST_REWARD = 5;
@@ -66,8 +68,8 @@ export function questsFor(day: string): Quest[] {
   const h = hash(day);
   const learn: QuestId[] = ['dung-10', 'dung-15'];
   const station: QuestId[] = ['xong-tram', 'xong-2-tram', 'thu-thach'];
-  const creative: QuestId[] = ['to-tranh', 'thay-do', 'san-dien'];
-  return [learn[h % 2], station[Math.floor(h / 2) % 3], creative[Math.floor(h / 6) % 3]].map((id) => QUESTS[id]);
+  const creative: QuestId[] = ['to-tranh', 'thay-do', 'san-dien', 'tro-choi'];
+  return [learn[h % 2], station[Math.floor(h / 2) % 3], creative[Math.floor(h / 6) % 4]].map((id) => QUESTS[id]);
 }
 
 export function questProgress(quest: Quest, today: TodayData): number {
@@ -80,6 +82,7 @@ export function questProgress(quest: Quest, today: TodayData): number {
     'to-tranh': today.artworks,
     'thay-do': today.dressed ? 1 : 0,
     'san-dien': today.showed ? 1 : 0,
+    'tro-choi': today.played ? 1 : 0,
   }[quest.id];
   return Math.min(quest.goal, value);
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { achievementProgress, dayKey, learningDays, questProgress, questsFor, startOfDay, type TodayData } from './rewards';
 
-const EMPTY: TodayData = { correct: 0, stationsDone: [], artworks: 0, dressed: false, showed: false };
+const EMPTY: TodayData = { correct: 0, stationsDone: [], artworks: 0, dressed: false, showed: false, played: false };
 
 describe('ngày học và vườn hoa', () => {
   it('dayKey theo giờ máy, startOfDay về 0 giờ', () => {
@@ -28,9 +28,14 @@ describe('nhiệm vụ hằng ngày', () => {
       const quests = questsFor(day);
       expect(quests).toHaveLength(3);
       expect(new Set(quests.map((q) => q.id)).size).toBe(3);
-      expect(['to-tranh', 'thay-do', 'san-dien']).toContain(quests[2].id);
+      expect(['to-tranh', 'thay-do', 'san-dien', 'tro-choi']).toContain(quests[2].id);
       expect(questsFor(day)).toEqual(quests);
     }
+  });
+
+  it('trò chơi có mặt trong vòng nhiệm vụ sáng tạo', () => {
+    const ids = new Set(Array.from({ length: 120 }, (_, d) => questsFor(dayKey(new Date(2026, 9, d + 1).getTime()))[2].id));
+    expect(ids).toEqual(new Set(['to-tranh', 'thay-do', 'san-dien', 'tro-choi']));
   });
 
   it('các ngày khác nhau có nhiệm vụ khác nhau', () => {
@@ -42,7 +47,7 @@ describe('nhiệm vụ hằng ngày', () => {
     for (let d = 1; d <= 20; d++) {
       for (const q of questsFor(dayKey(new Date(2026, 9, d).getTime()))) {
         expect(questProgress(q, EMPTY)).toBe(0);
-        const full: TodayData = { correct: 40, stationsDone: ['so-cong-tru', 'thu-thach-hinh-ve', 'bang-2-5'], artworks: 2, dressed: true, showed: true };
+        const full: TodayData = { correct: 40, stationsDone: ['so-cong-tru', 'thu-thach-hinh-ve', 'bang-2-5'], artworks: 2, dressed: true, showed: true, played: true };
         expect(questProgress(q, full)).toBe(q.goal);
       }
     }

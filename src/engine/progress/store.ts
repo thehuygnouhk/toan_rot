@@ -112,6 +112,17 @@ export async function claimQuestBonus(day: string): Promise<boolean> {
   return ok;
 }
 
+/** Chơi xong một mini-game: lưu sao cao nhất, thưởng cà rốt. */
+export async function finishGame(gameId: string, stars: number, bonus: number): Promise<void> {
+  await db.profile.where('id').equals('me').modify((p) => {
+    const prev = p.games?.[gameId];
+    p.games = { ...p.games, [gameId]: { best: Math.max(prev?.best ?? 0, stars), plays: (prev?.plays ?? 0) + 1 } };
+    p.lastGameAt = Date.now();
+    p.carrots += bonus;
+  });
+  changed();
+}
+
 /** Xong một buổi trình diễn trên Sàn diễn. */
 export async function finishShow(bonus: number): Promise<void> {
   await db.profile.where('id').equals('me').modify((p) => {
@@ -176,10 +187,11 @@ async function readToday(): Promise<TodayData> {
     artworks,
     dressed: (profile?.dressedAt ?? 0) >= start,
     showed: (profile?.lastShowAt ?? 0) >= start,
+    played: (profile?.lastGameAt ?? 0) >= start,
   };
 }
 
-const EMPTY_TODAY: TodayData = { correct: 0, stationsDone: [], artworks: 0, dressed: false, showed: false };
+const EMPTY_TODAY: TodayData = { correct: 0, stationsDone: [], artworks: 0, dressed: false, showed: false, played: false };
 
 async function readAchievementData(): Promise<AchievementData> {
   const [stations, artworks, profile, days] = await Promise.all([db.stations.toArray(), db.artworks.count(), db.profile.get('me'), readLearningDays()]);
